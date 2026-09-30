@@ -62,7 +62,7 @@ Instruções do subagente: objetivo, o que checar, formato da resposta.
 - [`radar-geometry`](skills/radar-geometry/SKILL.md) — convenção angular única, campo `order`, inversão do `yScale`, arcos e blips na mesma função. Leia antes de tocar no desenho do radar.
 - [`adicionar-quadrante`](skills/adicionar-quadrante/SKILL.md) — procedimento para incluir/reorganizar um quadrante só por configuração, i18n e conteúdo.
 - [`revisao-regressao-visual`](skills/revisao-regressao-visual/SKILL.md) — checklist de validação visual (screenshots, 3 idiomas, responsivo 800px, N=3/4/5/6, blip dentro do setor).
-- [`criar-user-story-db1`](skills/criar-user-story-db1/SKILL.md) — quebrar demanda em User Stories no padrão DB1/VSTS (10–12h, critérios de aceite, contabilização do prêmio).
+- [`criar-user-story-db1`](skills/criar-user-story-db1/SKILL.md) — quebrar demanda em User Stories no padrão DB1/VSTS (10–12h, critérios de aceite).
 - [`contribuir-db1-tech-radar`](skills/contribuir-db1-tech-radar/SKILL.md) — padrão de contribuição via fork + Pull Request (repo canônico db1group, fork pessoal, push no fork, PR para `main`).
 
 ### Agents
