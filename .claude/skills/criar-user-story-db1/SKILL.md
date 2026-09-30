@@ -3,14 +3,13 @@ name: criar-user-story-db1
 description: >
   Use para quebrar uma demanda/feature em subcards de User Story no padrão
   DB1/VSTS (Azure DevOps), ou para escrever a descrição de uma User Story. Cobre
-  a granularidade de 10–12h (~1 mês a 3h/semana), o tipo correto (User Story
-  conta para o prêmio), critérios de aceite, dependências e o formato do card.
+  a granularidade de 10–12h (~1 mês a 3h/semana), o tipo correto, critérios de aceite, dependências e o formato do card.
 ---
 
 # Criar User Stories no padrão DB1
 
 No VSTS (Azure DevOps, `db1global.visualstudio.com`), a entrega é contabilizada
-para o prêmio **de forma automatizada pela pipeline do time de dados**, e só
+**de forma automatizada pela pipeline do time de dados**, e só
 conta o que for do **tipo User Story**. Feature/Epic/Task/Bug não entram nessa
 contagem.
 
