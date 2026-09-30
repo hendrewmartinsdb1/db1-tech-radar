@@ -39,7 +39,7 @@ técnico ou lista de riscos, use-os como espinha dorsal da ordem.
 3. **Um bloco por US** com: Título, Objetivo, Escopo (bullets com arquivos
    reais), Critérios de aceite (verificáveis), Estimativa, Dependências.
 4. **Alternativas de granularidade** ao final: como picotar em mais entregas
-   (maximiza contagem no prêmio) ou consolidar em menos cards.
+   ou consolidar em menos cards.
 
 ## Regras firmes
 
