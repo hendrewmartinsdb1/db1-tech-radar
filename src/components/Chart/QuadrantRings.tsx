@@ -3,21 +3,16 @@ import React from "react";
 
 import { ConfigData } from "../../config";
 import { QuadrantConfig } from "../../model";
-
-const arcAngel = [
-  [(3 * Math.PI) / 2, (4 * Math.PI) / 2],
-  [0, Math.PI / 2],
-  [Math.PI, Math.PI * 3 / 2],
-  [Math.PI / 2, Math.PI],
-];
+import { DEG_TO_RAD, segmentAngles, segmentCount, slotOf } from "./geometry";
 
 function arcPath(
-  quadrantPosition: number,
+  slot: number,
+  numSegments: number,
   ringPosition: number,
   xScale: d3.ScaleLinear<number, number>,
   config: ConfigData
 ) {
-  const [startAngle, endAngle] = arcAngel[quadrantPosition - 1];
+  const { startAngle, endAngle } = segmentAngles(slot, numSegments);
   const arcAttrs = config.chartConfig.ringsAttributes[ringPosition],
     ringRadiusPx = xScale(arcAttrs.radius) - xScale(0),
     arc = d3.arc();
@@ -26,8 +21,8 @@ function arcPath(
     arc({
       innerRadius: ringRadiusPx - arcAttrs.arcWidth,
       outerRadius: ringRadiusPx,
-      startAngle,
-      endAngle,
+      startAngle: startAngle * DEG_TO_RAD,
+      endAngle: endAngle * DEG_TO_RAD,
     }) || undefined
   );
 }
@@ -45,7 +40,9 @@ const QuadrantRings: React.FC<{
     { x: xScale(0), y: xScale(0), cx: 0, cy: 0, r: 1 },
   ];
   const gradientId = `${quadrant.position}-radial-gradient`,
-    quadrantSize = config.chartConfig.size / 2;
+    quadrantSize = config.chartConfig.size / 2,
+    slot = slotOf(quadrant),
+    numSegments = segmentCount(config);
 
   return (
     <g className="quadrant-ring">
@@ -79,7 +76,7 @@ const QuadrantRings: React.FC<{
         <path
           key={index}
           fill={quadrant.colour}
-          d={arcPath(quadrant.position, index, xScale, config)}
+          d={arcPath(slot, numSegments, index, xScale, config)}
           style={{
             transform: `translate(${quadrantSize}px, ${quadrantSize}px)`,
           }}
