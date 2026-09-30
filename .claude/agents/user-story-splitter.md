@@ -4,8 +4,7 @@ description: >
   Recebe uma demanda (card principal, detalhamento técnico ou descrição de
   feature) e devolve a quebra em subcards de User Story no padrão DB1/VSTS:
   10–12h cada, com tabela-resumo, dependências, critérios de aceite e descrição
-  pronta para colar. Acione quando for planejar entrega ou dividir trabalho para
-  o prêmio.
+  pronta para colar. Acione quando for planejar entrega ou dividir trabalho.
 tools: Read, Grep, Glob
 model: sonnet
 ---
@@ -44,7 +43,7 @@ técnico ou lista de riscos, use-os como espinha dorsal da ordem.
 
 ## Regras firmes
 
-- Tipo **User Story** (não Task/Feature — só US conta no prêmio).
+- Tipo **User Story** (não Task/Feature).
 - Nada de US > 12h nem fatia artificial sem valor próprio.
 - Critério de aceite é comportamento observável/teste, nunca "código
   refatorado".
