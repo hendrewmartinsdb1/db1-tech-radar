@@ -59,7 +59,7 @@ equivalência visual), não descrição de implementação.
 - ❌ "Editar QuadrantRings.tsx" (fatiou por arquivo, sem resultado).
 - ❌ US de 40h (estoura a granularidade — quebrar em 3–4).
 - ❌ Critério de aceite = "código refatorado" (não é verificável).
-- ❌ Criar como Task/Feature (não conta para o prêmio).
+- ❌ Criar como Task/Feature.
 
 ## Fluxo sugerido
 
