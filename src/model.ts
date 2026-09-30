@@ -61,6 +61,8 @@ export type QuadrantConfig = {
   colour: string;
   txtColour: string;
   position: number;
+  /** Slot ocupado na tela (1..N, horário a partir das 12h). Default = position. */
+  order?: number;
   description: string;
 };
 
