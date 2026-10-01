@@ -5,7 +5,7 @@ const Ns = [3, 4, 5, 6];
 
 describe("segmentAngles", () => {
   it.each(Ns)(
-    "N=%i: setores contíguos, sem sobreposição, somando 360°",
+    "should split 360° into %i contiguous, non-overlapping sectors",
     (N) => {
       const increment = 360 / N;
 
@@ -27,7 +27,7 @@ describe("segmentAngles", () => {
     }
   );
 
-  it.each(Ns)("N=%i: nunca produz NaN ou valor não finito", (N) => {
+  it.each(Ns)("should only produce finite values for N=%i", (N) => {
     for (let slot = 1; slot <= N; slot++) {
       const { startAngle, endAngle, angleIncrement } = segmentAngles(slot, N);
       [startAngle, endAngle, angleIncrement].forEach((v) =>
@@ -37,16 +37,16 @@ describe("segmentAngles", () => {
   });
 });
 
-describe("trava de retrocompatibilidade (N=4)", () => {
-  const layoutAtual: Record<string, { order: number; start: number; end: number }> = {
+describe("backward compatibility (N=4)", () => {
+  const publishedLayout: Record<string, { order: number; start: number; end: number }> = {
     "methods-and-patterns": { order: 1, start: 0, end: 90 },
     "tools": { order: 2, start: 90, end: 180 },
     "platforms-and-operations": { order: 3, start: 180, end: 270 },
     "languages-and-frameworks": { order: 4, start: 270, end: 360 },
   };
 
-  it.each(Object.entries(layoutAtual))(
-    "%s permanece na mesma faixa angular de hoje",
+  it.each(Object.entries(publishedLayout))(
+    "should keep %s in its published angular range",
     (_slug, { order, start, end }) => {
       const { startAngle, endAngle } = segmentAngles(order, 4);
       expect(startAngle).toBeCloseTo(start);
@@ -56,17 +56,17 @@ describe("trava de retrocompatibilidade (N=4)", () => {
 });
 
 describe("slotOf", () => {
-  it("usa `order` quando presente", () => {
+  it("should use `order` when present", () => {
     expect(slotOf({ position: 1, order: 4 })).toBe(4);
   });
 
-  it("cai para `position` quando `order` está ausente", () => {
+  it("should fall back to `position` when `order` is missing", () => {
     expect(slotOf({ position: 2 })).toBe(2);
   });
 });
 
 describe("segmentCount", () => {
-  it("conta os quadrantes do quadrantsMap", () => {
+  it("should count the quadrants in quadrantsMap", () => {
     const config = {
       quadrantsMap: { a: {}, b: {}, c: {} },
     } as unknown as ConfigData;
