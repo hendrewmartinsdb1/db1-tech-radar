@@ -46,7 +46,7 @@
         "catalogo-de-opinioes-tecnologicas"
       ],
       "order": 3,
-      "documented": false,
+      "documented": true,
       "specified": true
     },
     {
