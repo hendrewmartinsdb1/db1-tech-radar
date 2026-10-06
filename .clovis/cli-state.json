@@ -24,7 +24,7 @@
         "taxonomia-de-quadrantes-e-aneis"
       ],
       "order": 1,
-      "documented": false,
+      "documented": true,
       "specified": true
     },
     {
@@ -35,7 +35,7 @@
         "catalogo-de-opinioes-tecnologicas"
       ],
       "order": 2,
-      "documented": false,
+      "documented": true,
       "specified": true
     },
     {
