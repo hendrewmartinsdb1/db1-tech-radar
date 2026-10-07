@@ -75,7 +75,7 @@
       "slug": "identidade-institucional-db1",
       "dependsOn": [],
       "order": 6,
-      "documented": false,
+      "documented": true,
       "specified": true
     }
   ],
