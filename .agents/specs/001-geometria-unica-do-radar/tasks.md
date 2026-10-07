@@ -62,3 +62,17 @@ dois domínios: **Taxonomia de Quadrantes e Anéis**, no contrato de quadrante d
     depuração, caso que a convenção de testes do projeto dispensa. A conferência é o SVG sem os
     grupos de eixo e o console limpo ao abrir a página inicial.
   - Casos de teste: TC-14, TC-15, TC-16, TC-17.
+
+- [ ] **T5. Referências de arquivo do gráfico na documentação de apoio**
+  - Depende de: nenhuma
+  - Alvo: `.agents/skills/registros-de-decisao-arquitetural/SKILL.md`, no gatilho "Geometria do
+    gráfico".
+  - Delta: a lista de arquivos de `src/components/Chart/` que compõem o desenho passa a ser
+    `RadarChart.tsx`, `BlipPoints.tsx`, `QuadrantRings.tsx` e `geometry.ts`.
+  - Alvo: `.agents/maps/functional-map.md`, na evidência no código do domínio Visualização do
+    Radar.
+  - Delta: `RadarChart.tsx` é descrito como escalas e composição do SVG, `geometry.ts` entra como
+    a convenção angular única do desenho — graus, 0° = 12 horas, sentido horário — e a linha de
+    arcos e formas passa a citar `QuadrantRings.tsx` e `BlipShapes.tsx`.
+  - Origem: histórias 1 e 4 da `spec.md` — a criação de `src/components/Chart/geometry.ts` como
+    fonte única da geometria e a remoção de `src/components/Chart/Axes.tsx`.

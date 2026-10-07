@@ -103,6 +103,14 @@ junto com o código.
   registro vigente da reescrita da geometria.
 - **`AGENTS.md`** — a restrição global sobre a quantidade de quadrantes passa a citar o caminho
   do ADR 0001, que guarda o porquê da escolha e as alternativas descartadas.
+- **`.agents/skills/registros-de-decisao-arquitetural/SKILL.md`** — o gatilho "Geometria do
+  gráfico" lista como arquivos de `src/components/Chart/` que compõem o desenho
+  `RadarChart.tsx`, `BlipPoints.tsx`, `QuadrantRings.tsx` e `geometry.ts`, que é o destino do
+  cálculo extraído descrito no próprio parágrafo.
+- **`.agents/maps/functional-map.md`** — na seção do domínio Visualização do Radar, a evidência
+  no código aponta `RadarChart.tsx` como escalas e composição do SVG, traz `geometry.ts` como a
+  convenção angular única do desenho e reúne `QuadrantRings.tsx` e `BlipShapes.tsx` como os
+  arcos e as três formas de ponto.
 
 Sem impacto em `.agents/skills/visualizacao-do-radar/SKILL.md`: a extração do cálculo para um
 módulo próprio é refatoração que preserva o desenho, caso que a própria skill manda não
