@@ -57,7 +57,7 @@
         "catalogo-de-opinioes-tecnologicas"
       ],
       "order": 4,
-      "documented": false,
+      "documented": true,
       "specified": true
     },
     {
@@ -67,7 +67,7 @@
         "catalogo-de-opinioes-tecnologicas"
       ],
       "order": 5,
-      "documented": false,
+      "documented": true,
       "specified": true
     },
     {
