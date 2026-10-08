@@ -1,8 +1,11 @@
 import realConfig from "../../../public/config.json";
 import { ConfigData } from "../../config";
-import { HomepageOption, QuadrantConfig } from "../../model";
+import { HomepageOption, Point, QuadrantConfig } from "../../model";
 import {
   DEG_TO_RAD,
+  GlowShape,
+  glowShape,
+  polarToCartesian,
   segmentAngles,
   segmentCount,
   segmentRadians,
@@ -63,10 +66,59 @@ const configWithQuadrants = (quadrantCount: number): ConfigData => {
   };
 };
 
+const publishedGlowTips = [
+  { slug: "methods-and-patterns", startTip: "top", endTip: "right" },
+  { slug: "tools", startTip: "right", endTip: "bottom" },
+  { slug: "platforms-and-operations", startTip: "bottom", endTip: "left" },
+  { slug: "languages-and-frameworks", startTip: "left", endTip: "top" },
+] as const;
+
+type Side = "top" | "right" | "bottom" | "left";
+
 const sectorsOf = (numSegments: number) =>
   Array.from({ length: numSegments }, (_, index) =>
     segmentAngles(index + 1, numSegments)
   );
+
+const polygonPoints = (shape: GlowShape): Point[] => {
+  if (shape.kind !== "polygon") {
+    throw new Error(`expected a polygon, got a ${shape.kind}`);
+  }
+
+  return shape.points;
+};
+
+const chordDistanceToCentre = (points: Point[]): number => {
+  const [centre, start, end] = points;
+  const dx = end.x - start.x,
+    dy = end.y - start.y;
+
+  return (
+    Math.abs(dx * (start.y - centre.y) - dy * (start.x - centre.x)) /
+    Math.sqrt(dx * dx + dy * dy)
+  );
+};
+
+const expectTipOn = (tip: Point, side: Side, centre: number) => {
+  switch (side) {
+    case "top":
+      expect(tip.x).toBeCloseTo(centre, 10);
+      expect(tip.y).toBeLessThan(centre);
+      break;
+    case "right":
+      expect(tip.x).toBeGreaterThan(centre);
+      expect(tip.y).toBeCloseTo(centre, 10);
+      break;
+    case "bottom":
+      expect(tip.x).toBeCloseTo(centre, 10);
+      expect(tip.y).toBeGreaterThan(centre);
+      break;
+    case "left":
+      expect(tip.x).toBeLessThan(centre);
+      expect(tip.y).toBeCloseTo(centre, 10);
+      break;
+  }
+};
 
 describe("segmentAngles", () => {
   segmentCounts.forEach((numSegments) => {
@@ -132,6 +184,108 @@ describe("segmentRadians", () => {
 
       expect(total).toBeCloseTo(2 * Math.PI, 10);
     });
+  });
+});
+
+describe("polarToCartesian", () => {
+  const centre = 400,
+    radius = 800;
+
+  it("should place 0 degrees straight above the centre", () => {
+    const { x, y } = polarToCartesian(centre, radius, 0);
+
+    expect(x).toBeCloseTo(centre, 10);
+    expect(y).toBeCloseTo(centre - radius, 10);
+  });
+
+  it("should place 90 degrees to the right of the centre", () => {
+    const { x, y } = polarToCartesian(centre, radius, 90);
+
+    expect(x).toBeCloseTo(centre + radius, 10);
+    expect(y).toBeCloseTo(centre, 10);
+  });
+
+  it("should place 180 degrees straight below the centre", () => {
+    const { x, y } = polarToCartesian(centre, radius, 180);
+
+    expect(x).toBeCloseTo(centre, 10);
+    expect(y).toBeCloseTo(centre + radius, 10);
+  });
+
+  it("should place 270 degrees to the left of the centre", () => {
+    const { x, y } = polarToCartesian(centre, radius, 270);
+
+    expect(x).toBeCloseTo(centre - radius, 10);
+    expect(y).toBeCloseTo(centre, 10);
+  });
+});
+
+describe("glowShape", () => {
+  const size = 800,
+    centre = size / 2;
+
+  it("should cover the whole radar circle with a single segment", () => {
+    expect(glowShape(1, 1, size)).toEqual({
+      kind: "circle",
+      cx: centre,
+      cy: centre,
+      r: centre,
+    });
+  });
+
+  it("should give the right half to the first of two segments", () => {
+    expect(glowShape(1, 2, size)).toEqual({
+      kind: "rect",
+      x: centre,
+      y: 0,
+      width: centre,
+      height: size,
+    });
+  });
+
+  it("should give the left half to the second of two segments", () => {
+    expect(glowShape(2, 2, size)).toEqual({
+      kind: "rect",
+      x: 0,
+      y: 0,
+      width: centre,
+      height: size,
+    });
+  });
+
+  [3, 5, 6].forEach((numSegments) => {
+    it(`should open each of the ${numSegments} sectors at the centre with finite tips`, () => {
+      for (let slot = 1; slot <= numSegments; slot++) {
+        const points = polygonPoints(glowShape(slot, numSegments, size));
+
+        expect(points).toHaveLength(3);
+        expect(points[0]).toEqual({ x: centre, y: centre });
+        points.forEach(({ x, y }) => {
+          expect(Number.isFinite(x)).toBe(true);
+          expect(Number.isFinite(y)).toBe(true);
+        });
+      }
+    });
+
+    it(`should keep the chord of each of the ${numSegments} sectors off the radar circle`, () => {
+      for (let slot = 1; slot <= numSegments; slot++) {
+        const distance = chordDistanceToCentre(
+          polygonPoints(glowShape(slot, numSegments, size))
+        );
+
+        expect(distance).toBeGreaterThanOrEqual(centre);
+      }
+    });
+  });
+
+  it("should make the chord tangent to the radar circle with three segments", () => {
+    for (let slot = 1; slot <= 3; slot++) {
+      const distance = chordDistanceToCentre(
+        polygonPoints(glowShape(slot, 3, size))
+      );
+
+      expect(distance).toBeCloseTo(centre, 10);
+    }
   });
 });
 
@@ -215,6 +369,23 @@ describe("public/config.json", () => {
 
       expect(arc.startAngle).toBeCloseTo(startAngle, 10);
       expect(arc.endAngle).toBeCloseTo(endAngle, 10);
+    });
+  });
+
+  publishedGlowTips.forEach(({ slug, startTip, endTip }) => {
+    it(`should keep the glow of ${slug} on the ${startTip}-to-${endTip} sector of the screen`, () => {
+      const size = publishedConfig.chartConfig.size,
+        centre = size / 2;
+      const [, start, end] = polygonPoints(
+        glowShape(
+          slotOf(publishedConfig.quadrantsMap[slug]),
+          segmentCount(publishedConfig),
+          size
+        )
+      );
+
+      expectTipOn(start, startTip, centre);
+      expectTipOn(end, endTip, centre);
     });
   });
 });

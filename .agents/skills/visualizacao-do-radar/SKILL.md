@@ -126,15 +126,19 @@ quadrante ao fundo e com a cor de texto declarada para aquele quadrante, de modo
 acompanhe a paleta do setor. Sem essa dica o diagrama é ilegível: nenhum ponto traz texto fixo ao
 seu lado.
 
-### 8. O setor de cada quadrante é pintado por um degradê mais os arcos dos anéis
+### 8. O setor de cada quadrante é pintado por um brilho de fundo mais os arcos dos anéis
 
-Cada quadrante ocupa um quarto da área do diagrama e recebe duas camadas:
+Cada quadrante ocupa a fatia do círculo apontada pelo seu slot de tela e recebe duas camadas:
 
-- um **degradê radial** da cor do quadrante, com intensidade máxima no centro do radar e
-  transparência total na borda externa, aplicado a meia opacidade — é ele que colore o fundo do
-  setor sem competir com os pontos;
+- um **brilho de fundo** — uma forma sólida na cor cheia do quadrante, cobrindo a fatia inteira e
+  recortada tanto pelo círculo do radar quanto por um degradê único do diagrama, que vai de meia
+  opacidade no centro à transparência total na borda externa. É ele que colore o fundo do setor
+  sem competir com os pontos, e toda a sua opacidade vem desse degradê;
 - um **arco por anel**, na cor cheia do quadrante, desenhado na faixa daquele anel e limitado ao
   setor do quadrante.
+
+O degradê é um só para o diagrama inteiro: todos os setores compartilham a mesma rampa do centro
+para a borda, e nenhuma cor de quadrante aparece fora do círculo do radar.
 
 ### 9. Todo anel da taxonomia ganha arco e rótulo, tenha ou não itens
 
@@ -203,21 +207,21 @@ tela estreita: a leitura de conjunto é substituída pela leitura em lista.
 
 ### 15. A ordem de empilhamento do desenho é fixa
 
-As camadas são desenhadas nesta ordem, de baixo para cima: os setores de cada quadrante (degradê
-e arcos), depois os rótulos de anel, e por último os pontos. Essa ordem é o que mantém todo ponto
-clicável e visível sobre o seu setor.
+As camadas são desenhadas nesta ordem, de baixo para cima: os setores de cada quadrante (brilho
+de fundo e arcos), depois os rótulos de anel, e por último os pontos. Essa ordem é o que mantém
+todo ponto clicável e visível sobre o seu setor.
 
-### 16. Os arcos acompanham a quantidade de quadrantes; o resto do desenho, não
+### 16. Os arcos e o brilho acompanham a quantidade de quadrantes; o resto do desenho, não
 
-Os arcos dos anéis são desenhados na fatia do slot de tela de cada quadrante, repartindo o
-círculo pela quantidade de quadrantes declarada na taxonomia, qualquer que seja ela. O restante
-do desenho continua preso a quatro posições: o brilho de fundo do setor, o deslocamento angular
-que sorteia a posição dos pontos e os blocos de rótulo nos cantos leem tabelas de quatro entradas
-indexadas pela posição exibida do quadrante, e um quinto quadrante declarado as faz devolver
-valor inexistente.
+Os arcos dos anéis e o brilho de fundo são desenhados na fatia do slot de tela de cada quadrante,
+repartindo o círculo pela quantidade de quadrantes declarada na taxonomia, qualquer que seja ela.
+O restante do desenho continua preso a quatro posições: o deslocamento angular que sorteia a
+posição dos pontos e os blocos de rótulo nos cantos leem tabelas de quatro entradas indexadas
+pela posição exibida do quadrante, e um quinto quadrante declarado as faz devolver valor
+inexistente.
 
 Publicar o radar com uma quantidade de quadrantes diferente de quatro depende de migrar essas
-três peças, e carrega a exigência de que o desenho permaneça idêntico ao publicado hoje sempre
+duas peças, e carrega a exigência de que o desenho permaneça idêntico ao publicado hoje sempre
 que houver quatro quadrantes. Cada passo dessa migração é decisão de arquitetura, sujeita a
 registro próprio.
 
@@ -347,7 +351,8 @@ do arco.
 - **A folga de sorteio precisa caber na faixa.** Uma faixa mais estreita que o dobro da folga não
   tem onde posicionar o ponto.
 - **Posições de quadrante de 1 a 4, sem repetição.** Duas posições iguais sobrepõem dois blocos de
-  rótulo no mesmo canto e desenham dois setores sobre a mesma área.
+  rótulo no mesmo canto. Dois setores desenhados sobre a mesma área são consequência de um slot de
+  tela repetido, que é dado distinto da posição.
 - **A lista de descrições de quadrante é posicional e precisa cobrir todas as posições.** Uma
   descrição faltando na posição de um quadrante impede o bloco de rótulo daquele canto de ser
   montado e derruba a página inicial; uma lista fora de ordem atribui silenciosamente a descrição

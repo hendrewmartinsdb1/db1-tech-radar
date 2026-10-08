@@ -57,8 +57,9 @@ describe("getTags", () => {
 ```
 
 A lógica angular do desenho é coberta por `src/components/Chart/geometry.ts`, que não
-importa `d3`: é lá que vivem a repartição do círculo, o slot de tela de cada quadrante e a
-conversão para os radianos que o gerador de arcos consome, e é `geometry.test.tsx` que as
+importa `d3`: é lá que vivem a repartição do círculo, o slot de tela de cada quadrante, a
+conversão para os radianos que o gerador de arcos consome, a conversão de polar para cartesiano
+em pixels de tela e a forma do brilho de fundo de cada setor, e é `geometry.test.tsx` que as
 exercita.
 
 Módulo que importa o `d3` não é alcançável pela suíte: o `d3` 7.8.0 é publicado como ESM e o
@@ -237,10 +238,10 @@ request descrito em `CONTRIBUTING.md`.
   projeto. O que é afirmável por teste são as funções puras de `geometry.ts`; a
   conferência do SVG — valores de `d`, `cx`, `cy` e `transform` — é manual, comparando a
   página com o radar publicado.
-- **O desenho ainda tem uma tabela indexada por posição.** O vetor de deslocamento
-  angular de `BlipPoints.tsx` é lido por `quadrantPosition - 1` e tem quatro entradas;
-  fixture com posição fora de 1 a 4 produz `undefined` em tempo de execução. Os arcos dos
-  anéis não têm essa restrição: eles tiram o setor de `geometry.ts`, pela quantidade de
+- **O vetor de deslocamento de `BlipPoints.tsx` é a tabela indexada por posição que resta.**
+  Ele é lido por `quadrantPosition - 1` e tem quatro entradas; fixture com posição fora de
+  1 a 4 produz `undefined` em tempo de execução. Os arcos dos anéis e o brilho de fundo do
+  setor não têm essa restrição: os dois tiram o setor de `geometry.ts`, pela quantidade de
   quadrantes declarada no `ConfigData`.
 - **A viewport do jsdom é móvel.** `isMobileViewport()` (`src/config.ts`) compara
   `window.innerWidth` com 1200, e o padrão do jsdom é 1024. Um teste que renderiza

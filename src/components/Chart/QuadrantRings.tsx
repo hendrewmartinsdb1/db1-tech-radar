@@ -3,7 +3,47 @@ import React from "react";
 
 import { ConfigData } from "../../config";
 import { QuadrantConfig } from "../../model";
-import { segmentCount, segmentRadians, slotOf } from "./geometry";
+import {
+  GlowShape,
+  glowShape,
+  segmentCount,
+  segmentRadians,
+  slotOf,
+} from "./geometry";
+
+function glowElement(shape: GlowShape, colour: string) {
+  switch (shape.kind) {
+    case "circle":
+      return (
+        <circle
+          cx={shape.cx}
+          cy={shape.cy}
+          r={shape.r}
+          fill={colour}
+          mask="url(#glow-mask)"
+        />
+      );
+    case "rect":
+      return (
+        <rect
+          x={shape.x}
+          y={shape.y}
+          width={shape.width}
+          height={shape.height}
+          fill={colour}
+          mask="url(#glow-mask)"
+        />
+      );
+    case "polygon":
+      return (
+        <polygon
+          points={shape.points.map(({ x, y }) => `${x},${y}`).join(" ")}
+          fill={colour}
+          mask="url(#glow-mask)"
+        />
+      );
+  }
+}
 
 function arcPath(
   slot: number,
@@ -32,44 +72,19 @@ const QuadrantRings: React.FC<{
   xScale: d3.ScaleLinear<number, number>;
   config: ConfigData;
 }> = ({ quadrant, xScale, config }) => {
-  // order from top-right clockwise
-  const gradientAttributes = [
-    { x: 1, y: 0, cx: 1, cy: 1, r: 1 },
-    { x: xScale(0), y: 0, cx: 0, cy: 1, r: 1 },
-    { x: 0, y: xScale(0), cx: 1, cy: 0, r: 1 },
-    { x: xScale(0), y: xScale(0), cx: 0, cy: 0, r: 1 },
-  ];
-  const gradientId = `${quadrant.position}-radial-gradient`,
-    quadrantSize = config.chartConfig.size / 2,
+  const quadrantSize = config.chartConfig.size / 2,
     slot = slotOf(quadrant),
     numSegments = segmentCount(config);
 
   return (
     <g className="quadrant-ring">
-      {/* Definition of the quadrant gradient */}
-      <defs>
-        <radialGradient
-          id={gradientId}
-          {...gradientAttributes[quadrant.position - 1]}
-        >
-          <stop offset="0%" stopColor={quadrant.colour}></stop>
-          <stop
-            offset="100%"
-            stopColor={quadrant.colour}
-            stopOpacity="0"
-          ></stop>
-        </radialGradient>
-      </defs>
-
-      {/* Gradient background area */}
-      <rect
-        width={quadrantSize}
-        height={quadrantSize}
-        x={gradientAttributes[quadrant.position - 1].x}
-        y={gradientAttributes[quadrant.position - 1].y}
-        fill={`url(#${gradientId})`}
-        style={{ opacity: 0.5 }}
-      />
+      {/* Background glow */}
+      <g mask="url(#radar-mask)">
+        {glowElement(
+          glowShape(slot, numSegments, config.chartConfig.size),
+          quadrant.colour
+        )}
+      </g>
 
       {/* Rings' arcs */}
       {Array.from(config.rings).map((ringPosition, index) => (

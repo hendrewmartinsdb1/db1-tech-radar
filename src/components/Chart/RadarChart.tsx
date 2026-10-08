@@ -64,11 +64,49 @@ const RadarChart: React.FC<{
     .domain(config.chartConfig.scale)
     .range([config.chartConfig.size, 0]);
 
+  const size = config.chartConfig.size,
+    centre = size / 2;
+
   return (
     <div className="chart" style={{ maxWidth: `${config.chartConfig.size}px` }}>
       <svg
         viewBox={`0 0 ${config.chartConfig.size} ${config.chartConfig.size + 100}`}
       >
+        <defs>
+          <mask
+            id="radar-mask"
+            maskUnits="userSpaceOnUse"
+            x={0}
+            y={0}
+            width={size}
+            height={size}
+          >
+            <rect x={0} y={0} width={size} height={size} fill="black" />
+            <circle cx={centre} cy={centre} r={centre} fill="white" />
+          </mask>
+
+          <radialGradient id="glow-gradient">
+            <stop offset="0%" stopColor="white" stopOpacity="0.5" />
+            <stop offset="100%" stopColor="white" stopOpacity="0" />
+          </radialGradient>
+
+          <mask
+            id="glow-mask"
+            maskUnits="userSpaceOnUse"
+            x={0}
+            y={0}
+            width={size}
+            height={size}
+          >
+            <circle
+              cx={centre}
+              cy={centre}
+              r={centre}
+              fill="url(#glow-gradient)"
+            />
+          </mask>
+        </defs>
+
         {Object.values(config.quadrantsMap).map((value, index) => (
           <QuadrantRings
             key={index}
