@@ -73,8 +73,9 @@ destaque continua existindo e acessível por outros caminhos, mas não ganha pon
 
 ### 3. O ponto é posicionado pelo cruzamento do quadrante com o anel
 
-Cada item em destaque vira um ponto dentro do setor de 90° do seu quadrante, na faixa
-circular do seu anel. O quadrante define o canto do diagrama; o anel define a distância ao
+Cada item em destaque vira um ponto dentro do setor apontado pelo **slot de tela** do seu
+quadrante — uma fatia de 360° dividido pela quantidade de quadrantes declarada na taxonomia —, na
+faixa circular do seu anel. O quadrante define a fatia do diagrama; o anel define a distância ao
 centro — quanto mais perto do centro, maior a confiança declarada na tecnologia.
 
 ### 4. A posição dentro do setor é sorteada a cada renderização
@@ -83,19 +84,19 @@ O ponto não tem coordenada guardada: ela é sorteada toda vez que o gráfico é
 item aparece em lugares diferentes do mesmo setor entre uma visita e outra. O sorteio segue
 quatro regras:
 
-1. **ângulo** — um valor aleatório dentro dos 90° do setor do quadrante;
-2. **distância do centro** — um valor aleatório dentro da faixa do anel, com uma folga de 0,7
-   unidade de coordenada afastando o ponto de cada uma das duas bordas da faixa, para que ele não
-   encoste nos arcos;
-3. **afastamento das linhas centrais** — o ponto não pode cair a menos de 15 px da linha vertical
-   nem da linha horizontal que cruzam o centro do diagrama, para não invadir o setor vizinho;
-4. **afastamento dos outros pontos** — o ponto não pode cair a menos de 1,5 vez o tamanho do ponto
-   de distância de um ponto **já posicionado**.
-
-O sorteio é repetido enquanto alguma das duas últimas condições for violada, com um teto de cem
-tentativas. Esgotado o teto, a última posição sorteada é aceita como está, ainda que em conflito.
-O teto é o que impede o desenho de travar quando um setor tem itens demais para a área
-disponível.
+1. **ângulo** — um valor aleatório dentro do setor do quadrante, com 10° livres junto a cada uma
+   das duas divisórias, para que o ponto não invada o setor vizinho;
+2. **distância do centro** — um valor aleatório dentro da faixa do anel, com 15 px livres junto a
+   cada um dos dois arcos que a delimitam; o sorteio aplica a raiz quadrada do valor sorteado
+   sobre a largura da faixa, o que espalha os pontos por toda ela em vez de adensá-los junto à
+   borda interna;
+3. **afastamento dos outros pontos** — o ponto não pode cair a menos de 1,5 vez o tamanho do ponto
+   de distância de um ponto **já posicionado no mesmo setor**; pontos de setores diferentes não se
+   afastam entre si;
+4. **teto de tentativas** — o sorteio é repetido enquanto a terceira regra for violada, até 150
+   tentativas. Esgotado o teto, um aviso é registrado no console e a última posição sorteada é
+   aceita como está, ainda que sobreposta. O teto é o que impede o desenho de travar quando um
+   setor tem itens demais para a área disponível.
 
 Os itens são posicionados em sequência e cada um se afasta apenas dos que já foram posicionados;
 nenhum ponto já colocado é movido por causa dos seguintes.
@@ -156,9 +157,9 @@ ativo, apresentado em caixa alta.
 
 ### 11. O diagrama não desenha linha de eixo visível
 
-A divisão entre os quatro quadrantes é comunicada pela cor de cada setor e pelo corredor livre de
-pontos ao redor das duas linhas centrais, garantido pela regra de afastamento do sorteio. Nenhum
-traço, régua ou marca de escala é desenhado sobre o diagrama.
+A divisão entre os quadrantes é comunicada pela cor de cada setor e pelo corredor livre de pontos
+junto a cada divisória, garantido pela margem angular do sorteio. Nenhum traço, régua ou marca de
+escala é desenhado sobre o diagrama.
 
 ### 12. Cada quadrante tem um bloco de rótulo no seu canto
 
@@ -211,19 +212,19 @@ As camadas são desenhadas nesta ordem, de baixo para cima: os setores de cada q
 de fundo e arcos), depois os rótulos de anel, e por último os pontos. Essa ordem é o que mantém
 todo ponto clicável e visível sobre o seu setor.
 
-### 16. Os arcos e o brilho acompanham a quantidade de quadrantes; o resto do desenho, não
+### 16. O diagrama acompanha a quantidade de quadrantes; os blocos de rótulo, não
 
-Os arcos dos anéis e o brilho de fundo são desenhados na fatia do slot de tela de cada quadrante,
-repartindo o círculo pela quantidade de quadrantes declarada na taxonomia, qualquer que seja ela.
-O restante do desenho continua preso a quatro posições: o deslocamento angular que sorteia a
-posição dos pontos e os blocos de rótulo nos cantos leem tabelas de quatro entradas indexadas
-pela posição exibida do quadrante, e um quinto quadrante declarado as faz devolver valor
-inexistente.
+Os arcos dos anéis, o brilho de fundo e os pontos são desenhados na fatia do slot de tela de cada
+quadrante, repartindo o círculo pela quantidade de quadrantes declarada na taxonomia, qualquer que
+seja ela. O que continua preso a quatro posições vive ao redor do diagrama: os blocos de rótulo
+nos cantos e as listas posicionais de descrição dos dicionários de tradução são indexados pela
+posição exibida do quadrante, com quatro entradas cada, e um quinto quadrante declarado os faz
+procurar valor inexistente.
 
 Publicar o radar com uma quantidade de quadrantes diferente de quatro depende de migrar essas
-duas peças, e carrega a exigência de que o desenho permaneça idêntico ao publicado hoje sempre
-que houver quatro quadrantes. Cada passo dessa migração é decisão de arquitetura, sujeita a
-registro próprio.
+peças, e carrega a exigência de que o desenho permaneça idêntico ao publicado hoje sempre que
+houver quatro quadrantes. Cada passo dessa migração é decisão de arquitetura, sujeita a registro
+próprio.
 
 ### 17. Item que o gráfico não consegue posicionar é omitido, sem aviso
 
@@ -241,10 +242,11 @@ correspondente e a tela inteira do radar deixa de renderizar (ver *Restrições 
 
 1. Carregar a configuração do radar e o acervo de opiniões.
 2. Selecionar apenas os itens em destaque.
-3. Para cada item, resolver a posição do seu quadrante e o índice do seu anel na taxonomia, e
+3. Para cada item, resolver o slot de tela do seu quadrante e o índice do seu anel na taxonomia, e
    descartar o item quando qualquer um dos dois não for resolvível (regra 17).
 4. Sortear a posição do ponto de cada item, na ordem em que eles aparecem no acervo, aplicando as
-   quatro regras de sorteio e o teto de tentativas.
+   quatro regras de sorteio e acumulando os pontos já colocados por setor, de modo que o
+   afastamento seja exigido apenas entre pontos do mesmo setor.
 5. Desenhar os setores de cada quadrante, os rótulos de anel e os pontos, na ordem de
    empilhamento fixa.
 6. Posicionar os quatro blocos de rótulo de quadrante nos cantos e a legenda das formas ao lado
@@ -255,23 +257,25 @@ correspondente e a tela inteira do radar deixa de renderizar (ver *Restrições 
 1. Acrescentar a entrada de geometria correspondente — raio e espessura do arco — **na mesma
    posição** que o anel ocupa na lista ordenada de anéis da taxonomia.
 2. Manter os raios estritamente crescentes do centro para a borda, e cada raio afastado do
-   anterior por mais que o dobro da folga do sorteio, para que a faixa comporte pontos.
+   anterior por mais de 30 px — o dobro da folga de sorteio —, para que a faixa comporte pontos.
 3. Conferir que o rótulo do anel existe nos três idiomas: ele é escrito dentro do diagrama.
 
 ### Acrescentar um quadrante ao desenho
 
-1. Atribuir a posição do quadrante na taxonomia — ela decide o canto do bloco de rótulo e o setor
-   do círculo.
+1. Atribuir o slot de tela do quadrante na taxonomia — ele decide a fatia do círculo — e a sua
+   posição exibida, que decide o canto do bloco de rótulo.
 2. Acrescentar a descrição longa do quadrante na mesma posição da lista de descrições de cada
    idioma, porque o bloco de rótulo a lê posicionalmente.
-3. Antes de passar de quatro quadrantes, tornar a geometria configurável (regra 16).
+3. Antes de passar de quatro quadrantes, migrar os blocos de rótulo nos cantos e as listas
+   posicionais de descrição (regra 16).
 
 ### Alterar o tamanho ou a escala do diagrama
 
 A escala de coordenadas e o lado do desenho são lidos juntos: alterar um sem o outro muda a
-conversão entre unidade de coordenada e pixel, e com ela a espessura aparente dos arcos, a folga
-entre os pontos e o corredor livre ao redor das linhas centrais — que são medidos em pixels, não
-em unidades de coordenada.
+conversão entre unidade de coordenada e pixel, e com ela a distância do centro até cada arco. A
+espessura do arco, o tamanho do ponto, o afastamento entre pontos vizinhos e a folga do sorteio
+são medidos em pixels e não acompanham essa conversão, de modo que as faixas mudam de largura
+enquanto as folgas ficam onde estão.
 
 ## Entidades e dados
 
@@ -348,8 +352,8 @@ do arco.
   diagrama é desenhado sem ele, sem erro visível.
 - **Raios estritamente crescentes.** Raios fora de ordem crescente fazem as faixas se sobrepor e
   podem inverter o intervalo de sorteio da distância, jogando o ponto fora do seu anel.
-- **A folga de sorteio precisa caber na faixa.** Uma faixa mais estreita que o dobro da folga não
-  tem onde posicionar o ponto.
+- **A folga de sorteio precisa caber na faixa.** A folga é de 15 px em cada borda, medida em
+  pixels de tela: uma faixa mais estreita que 30 px não tem onde posicionar o ponto.
 - **Posições de quadrante de 1 a 4, sem repetição.** Duas posições iguais sobrepõem dois blocos de
   rótulo no mesmo canto. Dois setores desenhados sobre a mesma área são consequência de um slot de
   tela repetido, que é dado distinto da posição.
@@ -363,8 +367,9 @@ do arco.
   acompanhe a taxonomia, que os raios estejam ordenados ou que as descrições estejam completas. O
   único controle é a revisão humana da alteração.
 - **Densidade alta degrada o desenho antes de quebrá-lo.** Quando um setor recebe mais itens do
-  que a sua área comporta com folga, o teto de cem tentativas é atingido e pontos passam a se
-  sobrepor. O diagrama continua funcionando; o que se perde é a legibilidade.
+  que a sua área comporta com folga, o teto de 150 tentativas é atingido, um aviso é registrado no
+  console e pontos passam a se sobrepor. O diagrama continua funcionando; o que se perde é a
+  legibilidade.
 - **O diagrama não é acessível por leitura sequencial nem em tela estreita.** Abaixo de 800 px de
   largura ele não é exibido, e toda a informação que ele carrega precisa continuar disponível nas
   listagens.

@@ -4,8 +4,13 @@ import { HomepageOption, Point, QuadrantConfig } from "../../model";
 import {
   DEG_TO_RAD,
   GlowShape,
+  POSITION_ATTEMPTS,
+  RING_PADDING,
+  SECTOR_PADDING_ANGLE,
+  blipPosition,
   glowShape,
   polarToCartesian,
+  radiusToPixels,
   segmentAngles,
   segmentCount,
   segmentRadians,
@@ -53,14 +58,16 @@ const configWithQuadrants = (quadrantCount: number): ConfigData => {
 
   return {
     quadrants: {},
-    rings: [],
+    rings: publishedConfig.rings.slice(),
     showEmptyRings: false,
     quadrantsMap,
     chartConfig: {
       size: 800,
       scale: [-16, 16],
       blipSize: 12,
-      ringsAttributes: [],
+      ringsAttributes: publishedConfig.chartConfig.ringsAttributes.map(
+        (attributes) => ({ ...attributes })
+      ),
     },
     homepageContent: HomepageOption.both,
   };
@@ -119,6 +126,61 @@ const expectTipOn = (tip: Point, side: Side, centre: number) => {
       break;
   }
 };
+
+const TOLERANCE = 1e-9;
+
+const publishedRingPixels = [200, 275, 350, 400];
+
+const publishedRingBands = [
+  { ring: "adopt", inner: 15, outer: 185 },
+  { ring: "trial", inner: 215, outer: 260 },
+  { ring: "assess", inner: 290, outer: 335 },
+  { ring: "hold", inner: 365, outer: 385 },
+];
+
+const publishedCorners = [
+  { slug: "methods-and-patterns", horizontal: "right", vertical: "top" },
+  { slug: "tools", horizontal: "right", vertical: "bottom" },
+  { slug: "platforms-and-operations", horizontal: "left", vertical: "bottom" },
+  { slug: "languages-and-frameworks", horizontal: "left", vertical: "top" },
+] as const;
+
+const centreOf = (config: ConfigData) => config.chartConfig.size / 2;
+
+const angleOf = ({ x, y }: Point, centre: number): number =>
+  (Math.atan2(x - centre, centre - y) / DEG_TO_RAD + 360) % 360;
+
+const distanceToCentre = ({ x, y }: Point, centre: number): number => {
+  const dx = x - centre,
+    dy = y - centre;
+
+  return Math.sqrt(dx * dx + dy * dy);
+};
+
+const ringBand = (ringIndex: number, config: ConfigData) => {
+  const { ringsAttributes } = config.chartConfig;
+
+  return {
+    inner:
+      (ringIndex === 0
+        ? 0
+        : radiusToPixels(ringsAttributes[ringIndex - 1].radius, config)) +
+      RING_PADDING,
+    outer:
+      radiusToPixels(ringsAttributes[ringIndex].radius, config) - RING_PADDING,
+  };
+};
+
+const drawPositions = (
+  count: number,
+  slot: number,
+  numSegments: number,
+  ringIndex: number,
+  config: ConfigData
+): Point[] =>
+  Array.from({ length: count }, () =>
+    blipPosition(slot, numSegments, ringIndex, config, [])
+  );
 
 describe("segmentAngles", () => {
   segmentCounts.forEach((numSegments) => {
@@ -372,6 +434,26 @@ describe("public/config.json", () => {
     });
   });
 
+  publishedCorners.forEach(({ slug, horizontal, vertical }) => {
+    it(`should draw every blip of ${slug} on the ${vertical} ${horizontal} corner of the screen`, () => {
+      const centre = centreOf(publishedConfig);
+      const points = drawPositions(
+        200,
+        slotOf(publishedConfig.quadrantsMap[slug]),
+        segmentCount(publishedConfig),
+        0,
+        publishedConfig
+      );
+
+      points.forEach(({ x, y }) => {
+        expect({
+          horizontal: x > centre ? "right" : "left",
+          vertical: y < centre ? "top" : "bottom",
+        }).toEqual({ horizontal, vertical });
+      });
+    });
+  });
+
   publishedGlowTips.forEach(({ slug, startTip, endTip }) => {
     it(`should keep the glow of ${slug} on the ${startTip}-to-${endTip} sector of the screen`, () => {
       const size = publishedConfig.chartConfig.size,
@@ -386,6 +468,124 @@ describe("public/config.json", () => {
 
       expectTipOn(start, startTip, centre);
       expectTipOn(end, endTip, centre);
+    });
+  });
+});
+
+describe("radiusToPixels", () => {
+  publishedRingPixels.forEach((pixels, ringIndex) => {
+    const ring = publishedConfig.rings[ringIndex];
+
+    it(`should convert the radius of ${ring} into ${pixels} screen pixels`, () => {
+      expect(
+        radiusToPixels(
+          publishedConfig.chartConfig.ringsAttributes[ringIndex].radius,
+          publishedConfig
+        )
+      ).toBe(pixels);
+    });
+  });
+});
+
+describe("blipPosition", () => {
+  publishedRingBands.forEach(({ ring, inner, outer }, ringIndex) => {
+    it(`should draw the blips of ${ring} between ${inner} and ${outer} pixels from the centre`, () => {
+      expect(ringBand(ringIndex, publishedConfig)).toEqual({ inner, outer });
+    });
+  });
+
+  segmentCounts.forEach((numSegments) => {
+    const config = configWithQuadrants(numSegments);
+    const centre = centreOf(config);
+
+    it(`should keep the angle inside the sector of each of the ${numSegments} slots`, () => {
+      for (let slot = 1; slot <= numSegments; slot++) {
+        const { startAngle, endAngle } = segmentAngles(slot, numSegments);
+
+        config.rings.forEach((_, ringIndex) => {
+          drawPositions(200, slot, numSegments, ringIndex, config).forEach(
+            (point) => {
+              const angle = angleOf(point, centre);
+
+              expect(angle).toBeGreaterThanOrEqual(
+                startAngle + SECTOR_PADDING_ANGLE - TOLERANCE
+              );
+              expect(angle).toBeLessThanOrEqual(
+                endAngle - SECTOR_PADDING_ANGLE + TOLERANCE
+              );
+            }
+          );
+        });
+      }
+    });
+
+    it(`should keep the distance inside the band of each ring with ${numSegments} segments`, () => {
+      for (let slot = 1; slot <= numSegments; slot++) {
+        config.rings.forEach((_, ringIndex) => {
+          const { inner, outer } = ringBand(ringIndex, config);
+
+          drawPositions(200, slot, numSegments, ringIndex, config).forEach(
+            (point) => {
+              const distance = distanceToCentre(point, centre);
+
+              expect(distance).toBeGreaterThanOrEqual(inner - TOLERANCE);
+              expect(distance).toBeLessThanOrEqual(outer + TOLERANCE);
+            }
+          );
+        });
+      }
+    });
+  });
+
+  [1, 2, 3, 4, 5, 6].forEach((numSegments) => {
+    it(`should return finite coordinates for every slot and ring with ${numSegments} segments`, () => {
+      const config = configWithQuadrants(numSegments);
+
+      for (let slot = 1; slot <= numSegments; slot++) {
+        config.rings.forEach((_, ringIndex) => {
+          const { x, y } = blipPosition(
+            slot,
+            numSegments,
+            ringIndex,
+            config,
+            []
+          );
+
+          expect(Number.isFinite(x)).toBe(true);
+          expect(Number.isFinite(y)).toBe(true);
+        });
+      }
+    });
+  });
+
+  describe("attempt ceiling", () => {
+    const alwaysHalf = () => 0.5;
+    let warn: jest.SpyInstance;
+
+    beforeEach(() => {
+      warn = jest.spyOn(console, "warn").mockImplementation(() => undefined);
+    });
+
+    afterEach(() => {
+      warn.mockRestore();
+    });
+
+    it(`should warn once and accept the last candidate after ${POSITION_ATTEMPTS} attempts`, () => {
+      const config = configWithQuadrants(4);
+      const taken = blipPosition(1, 4, 0, config, [], alwaysHalf);
+
+      const crowded = blipPosition(1, 4, 0, config, [taken], alwaysHalf);
+
+      expect(warn).toHaveBeenCalledTimes(1);
+      expect(crowded).toEqual(taken);
+    });
+
+    it("should accept the first candidate when the sector holds no blip yet", () => {
+      const config = configWithQuadrants(4);
+
+      blipPosition(1, 4, 0, config, [], alwaysHalf);
+
+      expect(warn).not.toHaveBeenCalled();
     });
   });
 });

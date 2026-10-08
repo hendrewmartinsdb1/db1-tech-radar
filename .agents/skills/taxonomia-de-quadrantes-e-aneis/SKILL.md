@@ -198,8 +198,9 @@ Item sem quadrante ou sem anel declarado também é omitido do gráfico.
 6. Publicar com um novo identificador de build, para que a configuração alterada chegue a quem
    já visitou o site.
 
-A geometria publicada hoje pressupõe quatro quadrantes em posições de 1 a 4; um quinto
-quadrante exige, antes, tornar esse número configurável.
+O diagrama acompanha a quantidade de quadrantes declarada; o bloco de rótulo nos cantos, com a
+sua lista posicional de descrições, pressupõe quatro posições. Um quinto quadrante exige, antes,
+migrar esse bloco.
 
 ### Acrescentar um anel
 
@@ -271,9 +272,11 @@ eixo, e aceitam marcação HTML simples, sanitizada antes de ser exibida.
   impede o gráfico de renderizar.
 - **O slug é segmento de URL**: sem barra, sem espaço e sem acento. A barra separa quadrante e
   nome do item no endereço da página de um item.
-- **O número de quadrantes é quatro.** A geometria publicada hoje assume quadrantes nas posições
-  1 a 4. Tornar esse número configurável é alteração de arquitetura e exige que o desenho
-  permaneça idêntico ao publicado hoje quando houver quatro quadrantes.
+- **O número de quadrantes é quatro.** O diagrama — arcos, brilho de fundo e pontos — é desenhado
+  a partir do slot de tela para qualquer quantidade de quadrantes declarada. O que ainda prende o
+  radar a quatro é o bloco de rótulo nos cantos, com a sua lista posicional de descrições.
+  Acrescentar um quinto quadrante é alteração de arquitetura e exige que o desenho permaneça
+  idêntico ao publicado hoje quando houver quatro quadrantes.
 - **Os três idiomas são obrigatórios.** Um eixo sem rótulo em um dos idiomas aparece com a chave
   crua naquele idioma; a lista de descrições faltante quebra a página de ajuda naquele idioma.
 - **Não há validação automática.** A conformidade entre acervo e taxonomia depende da revisão

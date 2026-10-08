@@ -126,12 +126,7 @@ const RadarChart: React.FC<{
           />
         ))}
 
-        <BlipPoints
-          items={items}
-          xScale={xScale}
-          yScale={yScale}
-          config={config}
-        />
+        <BlipPoints items={items} config={config} />
       </svg>
       <ReactTooltip className="tooltip" />
     </div>

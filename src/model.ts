@@ -40,7 +40,6 @@ export type Item = ItemAttributes & {
 };
 
 export type Blip = Item & {
-  quadrantPosition: number;
   ringPosition: number;
   colour: string;
   txtColour: string;

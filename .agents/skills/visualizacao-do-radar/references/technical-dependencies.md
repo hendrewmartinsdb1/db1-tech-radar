@@ -28,10 +28,10 @@ Cada item diz o que é e o que deixa de funcionar no domínio se ele faltar.
   quadrantes. Sem o registro, a restrição de equivalência visual se perde e a próxima alteração
   da geometria não tem contra o que ser conferida.
 
-- **`d3`** — fornece as escalas lineares que convertem unidade de coordenada em pixel e o gerador
-  de arcos que desenha a faixa de cada anel dentro do setor de cada quadrante. Sem ela, toda a
-  conversão de coordenadas e a construção do caminho dos arcos precisam ser reimplementadas; é a
-  biblioteca de que depende cada número de geometria documentado na skill.
+- **`d3`** — fornece as escalas lineares que posicionam os rótulos de anel e o gerador de arcos que
+  desenha a faixa de cada anel dentro do setor de cada quadrante. Sem ela, a construção do caminho
+  dos arcos e o posicionamento dos rótulos precisam ser reimplementados. O sorteio da posição dos
+  pontos não passa por ela: ângulo, raio e coordenada saem de funções puras sobre números.
 
 - **`react-tooltip`** — monta a dica que identifica o ponto ao passar o mouse, com a cor de fundo
   e a cor de texto do quadrante. Sem ela o diagrama fica mudo: nenhum ponto traz texto fixo ao
