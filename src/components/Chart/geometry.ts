@@ -113,14 +113,16 @@ export const blipPosition = (
     const radius = innerRadius + Math.sqrt(rand()) * (outerRadius - innerRadius);
     const angle = firstAngle + rand() * angleWidth;
 
-    candidate = polarToCartesian(centre, radius, angle);
+    const attemptPoint = polarToCartesian(centre, radius, angle);
+
+    candidate = attemptPoint;
 
     const clearOfNeighbours = placed.every(
-      (point) => distanceBetween(candidate, point) >= minDistance
+      (point) => distanceBetween(attemptPoint, point) >= minDistance
     );
 
     if (clearOfNeighbours) {
-      return candidate;
+      return attemptPoint;
     }
   }
 
