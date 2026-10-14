@@ -156,9 +156,9 @@ ponto ao passar o mouse).
   projeto e pede teste unitário que verifique se o ponto cai no setor correto.
 - Registro em ADR (skill `registros-de-decisao-arquitetural`) — a reescrita da geometria para
   suportar de um a seis quadrantes, em andamento nas branches
-  `feat/us1-geometry-foundation`, `feat/us2-rings-arcs-geometry`, `feat/us3-glow-mask` e
-  `feat/us4-blip-positioner`, é decisão de arquitetura e exige o desenho idêntico ao atual
-  quando houver quatro quadrantes.
+  `feat/us1-geometry-foundation`, `feat/us2-rings-arcs-geometry`, `feat/us3-glow-mask`,
+  `feat/us4-blip-positioner` e `feat/us5-i18n-by-slug`, é decisão de arquitetura e exige o
+  desenho idêntico ao atual quando houver quatro quadrantes.
 
 **Nível de confiança.** `high` — geometria e regras legíveis diretamente no componente.
 
@@ -253,8 +253,10 @@ acontece; o repositório público é `github.com/db1group/db1-tech-radar`.
 **Dependências técnicas do domínio.**
 - `CONTRIBUTING.md` e a página de ajuda — são a definição publicada do processo; divergência
   entre os dois deixa contribuinte e leitor com regras diferentes.
-- Chave `pageHelp` nos três arquivos de tradução — a página de ajuda lê listas inteiras de
-  objetos da tradução; faltando a chave em um idioma, a página quebra naquele idioma.
+- Chave `pageHelp` nos três arquivos de tradução — a página de ajuda lê estruturas inteiras da
+  tradução do idioma ativo: as listas narrativas `paragraphs` e `rings` e o mapa `quadrants`,
+  endereçado pelo slug do quadrante. Faltando a chave em um idioma, a página quebra naquele
+  idioma.
 - Convenção de testes (skill `estrategia-de-testes`) — a página de ajuda depende da forma dos
   objetos vindos da tradução e leva teste de componente quando essa estrutura muda.
 

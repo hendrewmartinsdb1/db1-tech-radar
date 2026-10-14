@@ -131,8 +131,8 @@ Quatro gatilhos deste projeto caem nesse critério por construção:
    `geometry.ts`, `blips.ts`)
    e as chaves `chartConfig` e `quadrantsMap` de `public/config.json`. A reescrita que torna o
    número de quadrantes configurável, em andamento nas branches `feat/us1-geometry-foundation`,
-   `feat/us2-rings-arcs-geometry`, `feat/us3-glow-mask` e `feat/us4-blip-positioner`, é o exemplo
-   vivo: ela extrai o cálculo para
+   `feat/us2-rings-arcs-geometry`, `feat/us3-glow-mask`, `feat/us4-blip-positioner` e
+   `feat/us5-i18n-by-slug`, é o exemplo vivo: ela extrai o cálculo para
    `src/components/Chart/geometry.ts`, mexe em `public/config.json` e em `src/model.ts`, e
    derruba a restrição de quatro quadrantes declarada no `AGENTS.md`.
 2. **Origem do acervo.** Hoje o acervo é o arquivo estático `public/db1-opinion.json`, editado à

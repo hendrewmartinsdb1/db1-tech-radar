@@ -42,10 +42,9 @@ Cada item diz o que é e o que deixa de funcionar no domínio se ele faltar.
   da legenda são resolvidos pelo idioma ativo. Sem a inicialização, o gráfico exibe as chaves
   cruas sobre o desenho.
 
-- **Lista posicional `pageHelp.quadrants` nos três arquivos de tradução** — o bloco de rótulo de
-  cada canto lê a descrição do quadrante pela posição dele nessa lista, não pelo slug. Lista mais
-  curta que o número de quadrantes derruba a página inicial; lista fora de ordem atribui a
-  descrição de um quadrante a outro, sem erro visível.
+- **Mapa `pageHelp.quadrants` nos três arquivos de tradução** — o bloco de rótulo de cada canto lê
+  a descrição do quadrante pela entrada do slug dele nesse mapa. Slug sem entrada no idioma ativo
+  cai no inglês; sem entrada nos três idiomas, o bloco exibe a própria chave como texto.
 
 - **`public/db1-opinion.json` servido como estático** — é de lá que vêm os itens desenhados, a
   classificação de cada um e a marca que escolhe a forma do ponto. Sem o acervo a aplicação não

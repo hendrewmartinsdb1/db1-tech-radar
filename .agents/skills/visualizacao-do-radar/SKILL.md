@@ -181,9 +181,11 @@ O bloco apresenta, nesta ordem:
    quadrante com a listagem completa dos seus itens;
 3. uma linha divisória pintada com a cor do quadrante;
 4. o rótulo traduzido do quadrante;
-5. a descrição longa do quadrante, no idioma ativo, lida da lista de descrições **pela posição do
-   quadrante** — a primeira descrição da lista descreve o quadrante de posição 1, e assim por
-   diante.
+5. a descrição longa do quadrante, no idioma ativo, lida **pelo slug do quadrante que o bloco
+   apresenta**.
+
+A posição exibida do quadrante responde por dois atributos do bloco: o número que o leitor lê e o
+canto em que o bloco fica.
 
 ### 13. A legenda explica as três formas de ponto
 
@@ -216,10 +218,10 @@ todo ponto clicável e visível sobre o seu setor.
 
 Os arcos dos anéis, o brilho de fundo e os pontos são desenhados na fatia do slot de tela de cada
 quadrante, repartindo o círculo pela quantidade de quadrantes declarada na taxonomia, qualquer que
-seja ela. O que continua preso a quatro posições vive ao redor do diagrama: os blocos de rótulo
-nos cantos e as listas posicionais de descrição dos dicionários de tradução são indexados pela
-posição exibida do quadrante, com quatro entradas cada, e um quinto quadrante declarado os faz
-procurar valor inexistente.
+seja ela. O que continua preso a quatro posições vive ao redor do diagrama: o canto do bloco de
+rótulo é escolhido por uma tabela de quatro entradas indexada pela posição exibida do quadrante, e
+um quinto quadrante declarado faz essa escolha procurar valor inexistente, de modo que o bloco
+aparece sem posicionamento na grade.
 
 Publicar o radar com uma quantidade de quadrantes diferente de quatro depende de migrar essas
 peças, e carrega a exigência de que o desenho permaneça idêntico ao publicado hoje sempre que
@@ -264,10 +266,9 @@ correspondente e a tela inteira do radar deixa de renderizar (ver *Restrições 
 
 1. Atribuir o slot de tela do quadrante na taxonomia — ele decide a fatia do círculo — e a sua
    posição exibida, que decide o canto do bloco de rótulo.
-2. Acrescentar a descrição longa do quadrante na mesma posição da lista de descrições de cada
-   idioma, porque o bloco de rótulo a lê posicionalmente.
-3. Antes de passar de quatro quadrantes, migrar os blocos de rótulo nos cantos e as listas
-   posicionais de descrição (regra 16).
+2. Acrescentar a entrada do slug nos três dicionários de idioma, com o rótulo curto e com o nome e
+   a descrição longa que o bloco de rótulo exibe.
+3. Antes de passar de quatro quadrantes, migrar os blocos de rótulo nos cantos (regra 16).
 
 ### Alterar o tamanho ou a escala do diagrama
 
@@ -357,10 +358,10 @@ do arco.
 - **Posições de quadrante de 1 a 4, sem repetição.** Duas posições iguais sobrepõem dois blocos de
   rótulo no mesmo canto. Dois setores desenhados sobre a mesma área são consequência de um slot de
   tela repetido, que é dado distinto da posição.
-- **A lista de descrições de quadrante é posicional e precisa cobrir todas as posições.** Uma
-  descrição faltando na posição de um quadrante impede o bloco de rótulo daquele canto de ser
-  montado e derruba a página inicial; uma lista fora de ordem atribui silenciosamente a descrição
-  de um quadrante a outro.
+- **A descrição de quadrante precisa cobrir todos os slugs declarados.** O bloco de rótulo resolve
+  a descrição pela chave do slug: ausente no idioma ativo, ela cai no inglês; ausente nos três
+  idiomas, o bloco exibe a própria chave como texto. Nos dois casos a página inicial continua de
+  pé, e é a suíte de consistência dos dicionários que acusa a falta antes da publicação.
 - **Rótulo de anel ausente em um idioma** faz o diagrama exibir a chave crua no lugar do nome do
   anel, nos dois lados do centro.
 - **Nenhuma validação automática.** Nada verifica, em tempo de build ou de carga, que a geometria
