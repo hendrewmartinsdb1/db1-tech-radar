@@ -3,7 +3,7 @@ name: visualizacao-do-radar
 description: >
   Esta é a documentação autoritativa do domínio Visualização do Radar: o diagrama circular da
   página inicial — geometria dos setores e das faixas, sorteio da posição de cada ponto, forma do
-  ponto por marca de publicação, rótulo de anel, bloco de quadrante nos cantos e legenda das
+  ponto por marca de publicação, rótulo de anel, bloco de rótulo de cada quadrante e legenda das
   formas. Carregue ao mexer em `chartConfig`, `ringsAttributes`, `blipSize`, `scale` ou
   `homepageContent`, no desenho dos arcos e setores, na dica exibida ao passar o mouse sobre o
   ponto, no atalho de aproximação do quadrante ou na largura mínima que exibe o gráfico.
@@ -36,8 +36,8 @@ O domínio entrega três peças que funcionam como uma só:
 
 - **o diagrama** — setores coloridos por quadrante, faixas concêntricas por anel e um ponto por
   tecnologia;
-- **os blocos de rótulo de quadrante** — um em cada canto, identificando o quadrante daquele
-  setor e oferecendo o atalho para a listagem completa dele;
+- **os blocos de rótulo de quadrante** — um por quadrante, do lado do setor que ele ocupa,
+  identificando esse quadrante e oferecendo o atalho para a listagem completa dele;
 - **a legenda das formas** — o que cada formato de ponto comunica.
 
 O domínio não cria conteúdo nem vocabulário: consome a taxonomia (quais quadrantes e anéis
@@ -161,17 +161,26 @@ A divisão entre os quadrantes é comunicada pela cor de cada setor e pelo corre
 junto a cada divisória, garantido pela margem angular do sorteio. Nenhum traço, régua ou marca de
 escala é desenhado sobre o diagrama.
 
-### 12. Cada quadrante tem um bloco de rótulo no seu canto
+### 12. Cada quadrante tem um bloco de rótulo do lado do seu setor
 
-Os quatro cantos da área do gráfico recebem um bloco de identificação, posicionado pela posição
-do quadrante na taxonomia:
+A área do gráfico recebe um bloco de identificação por quadrante, posicionado pelo **slot de
+tela** do quadrante — o mesmo número que decide a fatia do círculo que ele ocupa. Bloco e setor
+ficam do mesmo lado por construção, e reordenar o desenho leva o bloco junto.
 
-| Posição do quadrante | Canto do bloco |
-| --- | --- |
-| 1 | superior esquerdo |
-| 2 | superior direito |
-| 3 | inferior esquerdo |
-| 4 | inferior direito |
+O lugar de cada slot depende da quantidade de quadrantes declarada na taxonomia:
+
+| Quantidade | Slot 1 | Slot 2 | Slot 3 | Slot 4 | Slot 5 | Slot 6 |
+| --- | --- | --- | --- | --- | --- | --- |
+| 1 | superior esquerdo | — | — | — | — | — |
+| 2 | superior direito | superior esquerdo | — | — | — | — |
+| 3 | superior direito | inferior direito | superior esquerdo | — | — | — |
+| 4 | superior direito | inferior direito | inferior esquerdo | superior esquerdo | — | — |
+| 5 | superior direito | inferior direito | inferior ao centro | inferior esquerdo | superior esquerdo | — |
+| 6 | superior direito | direita ao meio | inferior direito | inferior esquerdo | esquerda ao meio | superior esquerdo |
+
+Com cinco quadrantes a área do gráfico reserva uma faixa abaixo do círculo para o bloco do centro
+inferior. Com seis, reserva faixa nas duas laterais e embaixo, e o diagrama ocupa a largura
+restante — a contrapartida de manter os seis blocos fora do círculo.
 
 O bloco apresenta, nesta ordem:
 
@@ -184,8 +193,7 @@ O bloco apresenta, nesta ordem:
 5. a descrição longa do quadrante, no idioma ativo, lida **pelo slug do quadrante que o bloco
    apresenta**.
 
-A posição exibida do quadrante responde por dois atributos do bloco: o número que o leitor lê e o
-canto em que o bloco fica.
+A posição exibida do quadrante responde por um único atributo do bloco: o número que o leitor lê.
 
 ### 13. A legenda explica as três formas de ponto
 
@@ -201,6 +209,10 @@ idioma ativo:
 A legenda mostra sempre as três formas, mesmo quando a edição vigente não tem nenhum item novo ou
 alterado.
 
+Ela fica à direita do diagrama, na altura do centro do círculo. Com seis quadrantes as duas
+laterais são ocupadas pelos blocos de rótulo, e a legenda fica no centro inferior, abaixo do
+círculo.
+
 ### 14. O gráfico exige janela larga
 
 O conjunto da visualização — diagrama, blocos de rótulo e legenda — só é exibido em janela com
@@ -214,19 +226,17 @@ As camadas são desenhadas nesta ordem, de baixo para cima: os setores de cada q
 de fundo e arcos), depois os rótulos de anel, e por último os pontos. Essa ordem é o que mantém
 todo ponto clicável e visível sobre o seu setor.
 
-### 16. O diagrama acompanha a quantidade de quadrantes; os blocos de rótulo, não
+### 16. A visualização comporta de um a seis quadrantes
 
 Os arcos dos anéis, o brilho de fundo e os pontos são desenhados na fatia do slot de tela de cada
 quadrante, repartindo o círculo pela quantidade de quadrantes declarada na taxonomia, qualquer que
-seja ela. O que continua preso a quatro posições vive ao redor do diagrama: o canto do bloco de
-rótulo é escolhido por uma tabela de quatro entradas indexada pela posição exibida do quadrante, e
-um quinto quadrante declarado faz essa escolha procurar valor inexistente, de modo que o bloco
-aparece sem posicionamento na grade.
+seja ela. O teto da visualização vem do layout ao redor do diagrama: a tabela de lugares da regra
+12 declara um lugar por slot para as quantidades de um a seis. Um sétimo quadrante declarado ganha
+o seu setor no diagrama e um bloco de rótulo sem lugar próprio, que cai sobre o bloco do slot 6.
 
-Publicar o radar com uma quantidade de quadrantes diferente de quatro depende de migrar essas
-peças, e carrega a exigência de que o desenho permaneça idêntico ao publicado hoje sempre que
-houver quatro quadrantes. Cada passo dessa migração é decisão de arquitetura, sujeita a registro
-próprio.
+Dentro desse teto, publicar o radar com qualquer quantidade de quadrantes é alteração de
+configuração, e carrega a exigência de que o desenho permaneça idêntico ao publicado hoje sempre
+que houver quatro quadrantes. Elevar o teto é decisão de arquitetura, sujeita a registro próprio.
 
 ### 17. Item que o gráfico não consegue posicionar é omitido, sem aviso
 
@@ -251,8 +261,8 @@ correspondente e a tela inteira do radar deixa de renderizar (ver *Restrições 
    afastamento seja exigido apenas entre pontos do mesmo setor.
 5. Desenhar os setores de cada quadrante, os rótulos de anel e os pontos, na ordem de
    empilhamento fixa.
-6. Posicionar os quatro blocos de rótulo de quadrante nos cantos e a legenda das formas ao lado
-   do diagrama.
+6. Posicionar um bloco de rótulo por quadrante, cada um pelo slot de tela do seu quadrante, e a
+   legenda das formas no lugar que a quantidade de quadrantes deixa livre.
 
 ### Acrescentar um anel ao desenho
 
@@ -264,11 +274,11 @@ correspondente e a tela inteira do radar deixa de renderizar (ver *Restrições 
 
 ### Acrescentar um quadrante ao desenho
 
-1. Atribuir o slot de tela do quadrante na taxonomia — ele decide a fatia do círculo — e a sua
-   posição exibida, que decide o canto do bloco de rótulo.
+1. Atribuir o slot de tela do quadrante na taxonomia — ele decide a fatia do círculo e o lugar do
+   bloco de rótulo — e a sua posição exibida, que é o número que o leitor lê no bloco.
 2. Acrescentar a entrada do slug nos três dicionários de idioma, com o rótulo curto e com o nome e
    a descrição longa que o bloco de rótulo exibe.
-3. Antes de passar de quatro quadrantes, migrar os blocos de rótulo nos cantos (regra 16).
+3. Conferir que a quantidade de quadrantes resultante cabe no teto de seis (regra 16).
 
 ### Alterar o tamanho ou a escala do diagrama
 
@@ -355,9 +365,12 @@ do arco.
   podem inverter o intervalo de sorteio da distância, jogando o ponto fora do seu anel.
 - **A folga de sorteio precisa caber na faixa.** A folga é de 15 px em cada borda, medida em
   pixels de tela: uma faixa mais estreita que 30 px não tem onde posicionar o ponto.
-- **Posições de quadrante de 1 a 4, sem repetição.** Duas posições iguais sobrepõem dois blocos de
-  rótulo no mesmo canto. Dois setores desenhados sobre a mesma área são consequência de um slot de
-  tela repetido, que é dado distinto da posição.
+- **Posições de quadrante sem repetição.** Duas posições iguais fazem dois blocos de rótulo
+  exibirem o mesmo número ao leitor. Dois setores desenhados sobre a mesma área, e dois blocos no
+  mesmo lugar, são consequência de um slot de tela repetido, que é dado distinto da posição.
+- **Teto de seis quadrantes.** A tabela de lugares dos blocos de rótulo (regra 12) declara um
+  lugar por slot até seis. Do sétimo em diante o diagrama continua correto e o bloco cai no lugar
+  de base, superior esquerdo, sobre o bloco do slot 6.
 - **A descrição de quadrante precisa cobrir todos os slugs declarados.** O bloco de rótulo resolve
   a descrição pela chave do slug: ausente no idioma ativo, ela cai no inglês; ausente nos três
   idiomas, o bloco exibe a própria chave como texto. Nos dois casos a página inicial continua de

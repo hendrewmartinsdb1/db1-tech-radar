@@ -33,8 +33,9 @@ cada um. É o vocabulário que toda opinião precisa respeitar para existir no r
 **Regras inferidas.**
 - Quadrante e anel são identificados por slug em inglês; o rótulo exibido vem sempre da
   tradução, nunca do dado.
-- A posição do quadrante (1 a 4) determina o canto do gráfico e o canto do rótulo, e é
-  consumida tanto pelo desenho quanto pela legenda.
+- Cada quadrante carrega dois números: o slot de tela (`order`) decide a fatia do círculo que
+  ele ocupa e o lugar do seu bloco de rótulo ao redor do gráfico; a posição (`position`) é o
+  número que o leitor vê no bloco.
 - `showEmptyRings` controla se um anel sem itens aparece nas listagens; hoje está desligado.
 - `hold` ("Evite") está definido na taxonomia mas nenhum item do acervo o usa atualmente.
 - A conformidade entre o item e a taxonomia é garantida pela revisão do pull request: a
@@ -139,9 +140,9 @@ ponto posicionado no cruzamento do seu quadrante com o seu anel, legendado e nav
 - A forma do ponto comunica a marca do item: novo, alterado ou estável.
 - Só itens em destaque (`featured`) entram no gráfico.
 - A repartição do círculo acompanha a quantidade de quadrantes declarada na taxonomia, e dela
-  saem os arcos dos anéis, o brilho de fundo e o sorteio da posição dos pontos de cada setor. O
-  que continua preso a quatro posições são os blocos de rótulo nos cantos, indexados pela posição
-  exibida do quadrante.
+  saem os arcos dos anéis, o brilho de fundo, o sorteio da posição dos pontos de cada setor e o
+  lugar do bloco de rótulo de cada quadrante. O teto de seis quadrantes vem da tabela de lugares
+  dos blocos, ao redor do diagrama.
 
 **Dependências externas relevantes.** `d3` (escalas lineares), `react-tooltip` (rótulo do
 ponto ao passar o mouse).
@@ -157,8 +158,8 @@ ponto ao passar o mouse).
 - Registro em ADR (skill `registros-de-decisao-arquitetural`) — a reescrita da geometria para
   suportar de um a seis quadrantes, em andamento nas branches
   `feat/us1-geometry-foundation`, `feat/us2-rings-arcs-geometry`, `feat/us3-glow-mask`,
-  `feat/us4-blip-positioner` e `feat/us5-i18n-by-slug`, é decisão de arquitetura e exige o
-  desenho idêntico ao atual quando houver quatro quadrantes.
+  `feat/us4-blip-positioner`, `feat/us5-i18n-by-slug` e `feat/us6-labels-grid`, é decisão de
+  arquitetura e exige o desenho idêntico ao atual quando houver quatro quadrantes.
 
 **Nível de confiança.** `high` — geometria e regras legíveis diretamente no componente.
 

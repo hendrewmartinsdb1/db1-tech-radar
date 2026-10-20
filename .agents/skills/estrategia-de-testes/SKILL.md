@@ -93,7 +93,8 @@ teste de componente:
 
 - edição do JSX, das props ou de um ramo de renderização de um `src/components/Page*/`;
 - edição de um componente que a página renderiza (`Item`, `ItemList`, `QuadrantSection`,
-  `RadarGrid`, `Search`, `Header`, `Footer`) quando o resultado visível muda;
+  `QuadrantGrid`, `QuadrantLabel`, `RadarGrid`, `Search`, `Header`, `Footer`) quando o resultado
+  visível muda;
 - mudança em `getPageByName` ou nas regras de seleção de página em `Router.tsx`;
 - chave de tradução nova ou renomeada que a página exibe.
 
@@ -238,10 +239,20 @@ request descrito em `CONTRIBUTING.md`.
   independente de locale (`"DD.MM.YYYY"`) ou fixe o idioma no teste antes de esperar
   um nome de mês.
 - **O gráfico é SVG escrito à mão e a suíte não o renderiza.** `RadarChart` e `QuadrantRings`
-  importam `d3` e ficam fora do alcance do Jest deste projeto. `BlipPoints.tsx` fica fora pelo
-  `query-string` que o `Link` de cada ponto traz, mesmo sem importar `d3`. O que é afirmável por
-  teste são as funções puras de `geometry.ts` e de `blips.ts`; a conferência do SVG — valores de
-  `d`, `cx`, `cy` e `transform` — é manual, comparando a página com o radar publicado.
+  importam `d3` e ficam fora do alcance do Jest deste projeto, e com eles `RadarGrid`, que traz
+  `RadarChart`. O que é afirmável por teste são as funções puras de `geometry.ts` e de
+  `blips.ts`; a conferência do SVG — valores de `d`, `cx`, `cy` e `transform` — é manual,
+  comparando a página com o radar publicado.
+- **`Link` é alcançável; o `d3`, não.** Um componente cujo único import ESM é `Link`
+  (`src/components/Link/Link.tsx`, que traz o `query-string` 8.1.0 por
+  `use-search-param-state`) entra no alcance da suíte substituindo esse módulo no próprio arquivo
+  de teste, com `jest.mock("../Link/Link")` e uma fábrica que devolve um `<a>`; é assim que
+  `QuadrantLabel.test.tsx` e `QuadrantGrid.test.tsx` rodam, e é o que colocaria `BlipPoints.tsx`
+  ao alcance da suíte, já que ele também só chega ao ESM pelo `Link`. Sem a substituição, o
+  `query-string` derruba o arquivo com `SyntaxError: Cannot use import statement outside a
+  module` antes de qualquer caso — é o que mantém `Item.test.tsx` vermelho. A substituição não
+  alcança o `d3`: módulo que o importe continua fora do alcance da suíte, porque o `d3` chega
+  por `node_modules` e não por um import do próprio `src/`.
 - **A viewport do jsdom é móvel.** `isMobileViewport()` (`src/config.ts`) compara
   `window.innerWidth` com 1200, e o padrão do jsdom é 1024. Um teste que renderiza
   `Router` numa rota de item cai em `PageItemMobile`. Renderize o `Page*` desejado

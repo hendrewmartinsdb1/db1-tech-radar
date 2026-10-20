@@ -83,21 +83,15 @@ a classificação é um julgamento editorial, não uma regra mecânica.
 
 ### 4. Cada quadrante carrega dois números: a posição exibida e o slot de tela
 
-A **posição** (`position`) é o número que o leitor vê. O bloco de rótulo apresenta o quadrante
-como "quadrante *N*", com a posição seguida do rótulo traduzido e da descrição, e é ela também
-que decide em que canto da área do gráfico esse bloco fica:
-
-| Posição | Canto do bloco de rótulo |
-| --- | --- |
-| 1 | superior esquerdo |
-| 2 | superior direito |
-| 3 | inferior esquerdo |
-| 4 | inferior direito |
+A **posição** (`position`) é o número que o leitor vê, e só isso. O bloco de rótulo apresenta o
+quadrante como "quadrante *N*", com a posição seguida do rótulo traduzido e da descrição.
 
 O **slot de tela** (`order`) é a fatia do círculo que o quadrante ocupa, contada de 1 a N no
 sentido horário a partir das 12 horas, com N igual à quantidade de quadrantes declarados: o slot
-1 começa no topo e cada slot abrange 360°/N. Os dois números são declarados separados para que o
-radar possa ser reorganizado na tela sem renumerar os quadrantes que o leitor vê.
+1 começa no topo e cada slot abrange 360°/N. É ele também que decide onde fica o bloco de rótulo
+daquele quadrante, de modo que bloco e setor ficam do mesmo lado da área do gráfico. Os dois
+números são declarados separados para que o radar possa ser reorganizado na tela sem renumerar os
+quadrantes que o leitor vê.
 
 | Slug | Posição | Slot de tela |
 | --- | --- | --- |
@@ -194,7 +188,8 @@ Item sem quadrante ou sem anel declarado também é omitido do gráfico.
 
 1. Escolher o slug em inglês, estável e válido como segmento de URL.
 2. Declará-lo nos dois mapas da taxonomia: o de nomes e o de atributos (ver *Entidades e dados*).
-3. Atribuir a posição (o canto do radar), a cor do setor e a cor do texto.
+3. Atribuir a posição (o número exibido), o slot de tela (a fatia do círculo e o lugar do bloco
+   de rótulo), a cor do setor e a cor do texto.
 4. Acrescentar a entrada do slug nos três dicionários de idioma, com o rótulo curto e com o nome
    e a descrição longa.
 5. Acrescentar a entrada de geometria correspondente, para que o novo setor tenha onde ser
@@ -202,8 +197,8 @@ Item sem quadrante ou sem anel declarado também é omitido do gráfico.
 6. Publicar com um novo identificador de build, para que a configuração alterada chegue a quem
    já visitou o site.
 
-O diagrama acompanha a quantidade de quadrantes declarada; o bloco de rótulo nos cantos pressupõe
-quatro posições. Um quinto quadrante exige, antes, migrar esse bloco.
+O diagrama e os blocos de rótulo acompanham a quantidade de quadrantes declarada, até o teto de
+seis.
 
 ### Acrescentar um anel
 
@@ -270,7 +265,8 @@ marcação HTML simples, sanitizada antes de ser exibida.
 - **Os dois mapas de quadrante declaram o mesmo conjunto de slugs.** Um slug presente só no mapa
   de nomes tem página própria mas não é desenhado; presente só no mapa de atributos, é desenhado
   mas não tem página nem listagem.
-- **Posições de 1 a 4, sem repetição.** Duas posições iguais sobrepõem rótulos no mesmo canto.
+- **Posições sem repetição.** Duas posições iguais fazem dois blocos de rótulo exibirem o mesmo
+  número ao leitor.
 - **Slots de tela contíguos de 1 a N, sem repetição.** Os valores de `order` cobrem a sequência
   inteira de 1 até a quantidade de quadrantes declarados, sem buraco. Um slot repetido desenha
   dois quadrantes sobre a mesma fatia do círculo e deixa outra fatia sem dono.
@@ -278,11 +274,11 @@ marcação HTML simples, sanitizada antes de ser exibida.
   impede o gráfico de renderizar.
 - **O slug é segmento de URL**: sem barra, sem espaço e sem acento. A barra separa quadrante e
   nome do item no endereço da página de um item.
-- **O número de quadrantes é quatro.** O diagrama — arcos, brilho de fundo e pontos — é desenhado
-  a partir do slot de tela para qualquer quantidade de quadrantes declarada. O que ainda prende o
-  radar a quatro é o bloco de rótulo nos cantos, posicionado pela posição exibida. Acrescentar um
-  quinto quadrante é alteração de arquitetura e exige que o desenho permaneça idêntico ao
-  publicado hoje quando houver quatro quadrantes.
+- **O número de quadrantes vai de um a seis.** O diagrama — arcos, brilho de fundo e pontos — é
+  desenhado a partir do slot de tela para qualquer quantidade declarada; o teto vem da tabela de
+  lugares dos blocos de rótulo ao redor do gráfico, que declara um lugar por slot até seis. Um
+  sétimo quadrante deixa o seu bloco sobre o do slot 6. Qualquer quantidade declarada precisa
+  manter o desenho idêntico ao publicado hoje quando houver quatro quadrantes.
 - **Os três idiomas são obrigatórios.** Um eixo sem rótulo em um dos idiomas aparece com a chave
   crua naquele idioma. O quadrante sem entrada em `pageHelp.quadrants` no idioma ativo some da
   lista da página de ajuda, porque a página lê o mapa inteiro do idioma ativo; no bloco de rótulo
