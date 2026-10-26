@@ -12,6 +12,21 @@ import { blipQuarterTurns } from "./legacyAngles";
 
 const publishedConfig = realConfig as unknown as ConfigData;
 
+const withoutOrder = (config: ConfigData): ConfigData => ({
+  ...config,
+  quadrantsMap: Object.fromEntries(
+    Object.entries(config.quadrantsMap).map(([slug, { order, ...quadrant }]) => [
+      slug,
+      quadrant,
+    ])
+  ),
+});
+
+const lockedConfigs = [
+  { variant: "as published", config: publishedConfig },
+  { variant: "without order", config: withoutOrder(publishedConfig) },
+];
+
 const segmentCounts = [3, 4, 5, 6];
 
 const publishedSectors = [
@@ -155,15 +170,24 @@ describe("slotOf", () => {
     expect(slotOf(quadrant)).toBe(2);
   });
 
-  it("should fall back to the position when no order is declared", () => {
-    const quadrant: QuadrantConfig = {
-      colour: "#ffc000",
-      txtColour: "white",
-      position: 4,
-      description: "",
-    };
+  [
+    { position: 1, slot: 4 },
+    { position: 2, slot: 1 },
+    { position: 3, slot: 3 },
+    { position: 4, slot: 2 },
+    { position: 5, slot: 5 },
+    { position: 6, slot: 6 },
+  ].forEach(({ position, slot }) => {
+    it(`should fall back to slot ${slot} for position ${position} when no order is declared`, () => {
+      const quadrant: QuadrantConfig = {
+        colour: "#ffc000",
+        txtColour: "white",
+        position,
+        description: "",
+      };
 
-    expect(slotOf(quadrant)).toBe(4);
+      expect(slotOf(quadrant)).toBe(slot);
+    });
   });
 });
 
@@ -201,38 +225,45 @@ describe("public/config.json", () => {
     );
   });
 
-  publishedSectors.forEach(({ slug, startAngle, endAngle }) => {
-    it(`should keep ${slug} between ${startAngle} and ${endAngle} degrees`, () => {
-      const sector = segmentAngles(
-        slotOf(publishedConfig.quadrantsMap[slug]),
-        segmentCount(publishedConfig)
-      );
+  lockedConfigs.forEach(({ variant, config }) => {
+    describe(`${variant}`, () => {
+      publishedSectors.forEach(({ slug, startAngle, endAngle }) => {
+        it(`should keep ${slug} between ${startAngle} and ${endAngle} degrees`, () => {
+          const sector = segmentAngles(
+            slotOf(config.quadrantsMap[slug]),
+            segmentCount(config)
+          );
 
-      expect(sector.startAngle).toBe(startAngle);
-      expect(sector.endAngle).toBe(endAngle);
-    });
-  });
+          expect(sector.startAngle).toBe(startAngle);
+          expect(sector.endAngle).toBe(endAngle);
+        });
+      });
 
-  publishedArcs.forEach(({ slug, startAngle, endAngle }) => {
-    it(`should feed the arc generator with the published radians of ${slug}`, () => {
-      const arc = segmentRadians(
-        slotOf(publishedConfig.quadrantsMap[slug]),
-        segmentCount(publishedConfig)
-      );
+      publishedArcs.forEach(({ slug, startAngle, endAngle }) => {
+        it(`should feed the arc generator with the published radians of ${slug}`, () => {
+          const arc = segmentRadians(
+            slotOf(config.quadrantsMap[slug]),
+            segmentCount(config)
+          );
 
-      expect(arc.startAngle).toBeCloseTo(startAngle, 10);
-      expect(arc.endAngle).toBeCloseTo(endAngle, 10);
-    });
-  });
+          expect(arc.startAngle).toBeCloseTo(startAngle, 10);
+          expect(arc.endAngle).toBeCloseTo(endAngle, 10);
+        });
+      });
 
-  Object.entries(publishedConfig.quadrantsMap).forEach(([slug, quadrant]) => {
-    it(`should place the ${slug} blips on the sector given by its order`, () => {
-      const { startAngle, endAngle } = segmentAngles(
-        slotOf(quadrant),
-        segmentCount(publishedConfig)
-      );
+      Object.entries(config.quadrantsMap).forEach(([slug, quadrant]) => {
+        it(`should place the ${slug} blips on the same sector as its arcs`, () => {
+          const { startAngle, endAngle } = segmentAngles(
+            slotOf(quadrant),
+            segmentCount(config)
+          );
 
-      expect(blipSectorOf(quadrant.position)).toEqual({ startAngle, endAngle });
+          expect(blipSectorOf(quadrant.position)).toEqual({
+            startAngle,
+            endAngle,
+          });
+        });
+      });
     });
   });
 });

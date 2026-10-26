@@ -17,8 +17,12 @@ export type SegmentRadians = {
 export const segmentCount = (config: ConfigData): number =>
   Object.keys(config.quadrantsMap).length;
 
+const legacySlotByPosition = [4, 1, 3, 2];
+
 export const slotOf = (quadrant: QuadrantConfig): number =>
-  quadrant.order ?? quadrant.position;
+  quadrant.order ??
+  legacySlotByPosition[quadrant.position - 1] ??
+  quadrant.position;
 
 export const segmentAngles = (
   slot: number,

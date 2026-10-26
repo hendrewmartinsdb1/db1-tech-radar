@@ -52,8 +52,12 @@ Cada entrada de `quadrantsMap` declara dois números com papéis distintos:
 | `order` | Slot do círculo, de 1 a N no sentido horário a partir das 12 horas. |
 | `position` | Número exibido no rótulo "QUADRANTE N" e canto do bloco de rótulo. |
 
-- Leia o slot sempre por `slotOf(quadrant)`, que devolve `order` e cai na `position` quando
-  `order` não foi declarado. Não leia `order` direto.
+- Leia o slot sempre por `slotOf(quadrant)`, que devolve `order`. Sem `order`, as posições 1 a 4
+  caem no slot que o desenho de quatro quadrantes sempre lhes deu (4, 1, 3 e 2), e posição acima
+  de 4 cai no próprio número — assim uma configuração sem `order` desenha arcos, brilho, pontos e
+  rótulos no mesmo lugar. Não leia `order` direto.
+- Taxonomia com quantidade diferente de quatro declara `order` em todos os quadrantes: sem ele,
+  de um a três quadrantes recebem slot inexistente.
 - Os valores de `order` são contíguos de 1 a N, sem repetição.
 - Mudar o lugar de um quadrante no círculo é mudar `order`; renumerar o rótulo é mudar
   `position`. Uma mudança não pode exigir a outra.
@@ -79,7 +83,8 @@ porque o teste da peça migrada passa a consumir `segmentAngles` diretamente.
 
 Com quatro quadrantes, o desenho é idêntico ao publicado em `techradar.db1.com.br`. O bloco
 `public/config.json` de `src/components/Chart/geometry.test.tsx` lê o `public/config.json` do
-repositório — nunca uma cópia de fixture — e:
+repositório — nunca uma cópia de fixture —, duas vezes: como publicado e com o `order` removido
+de todos os quadrantes, o que prende o fallback de `slotOf` ao desenho publicado. Em cada uma:
 
 - fixa a faixa angular publicada de cada slug (`publishedSectors`) e os radianos publicados que
   alimentam o gerador de arcos (`publishedArcs`);
