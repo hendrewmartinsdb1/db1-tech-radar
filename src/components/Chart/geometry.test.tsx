@@ -2,6 +2,7 @@ import realConfig from "../../../public/config.json";
 import { ConfigData } from "../../config";
 import { HomepageOption, QuadrantConfig } from "../../model";
 import { DEG_TO_RAD, segmentAngles, segmentCount, slotOf } from "./geometry";
+import { arcAngel, blipQuarterTurns } from "./legacyAngles";
 
 const publishedConfig = realConfig as unknown as ConfigData;
 
@@ -40,6 +41,12 @@ const configWithQuadrants = (quadrantCount: number): ConfigData => {
     },
     homepageContent: HomepageOption.both,
   };
+};
+
+const blipSectorOf = (position: number) => {
+  const startAngle = ((4 - blipQuarterTurns[position - 1]) % 4) * 90;
+
+  return { startAngle, endAngle: startAngle + 90 };
 };
 
 const sectorsOf = (numSegments: number) =>
@@ -157,6 +164,24 @@ describe("public/config.json", () => {
 
       expect(sector.startAngle).toBe(startAngle);
       expect(sector.endAngle).toBe(endAngle);
+    });
+  });
+
+  Object.entries(publishedConfig.quadrantsMap).forEach(([slug, quadrant]) => {
+    const sector = () =>
+      segmentAngles(slotOf(quadrant), segmentCount(publishedConfig));
+
+    it(`should draw the ${slug} ring arcs on the sector given by its order`, () => {
+      const [startAngle, endAngle] = arcAngel[quadrant.position - 1];
+
+      expect(startAngle).toBeCloseTo(sector().startAngle * DEG_TO_RAD, 10);
+      expect(endAngle).toBeCloseTo(sector().endAngle * DEG_TO_RAD, 10);
+    });
+
+    it(`should place the ${slug} blips on the sector given by its order`, () => {
+      const { startAngle, endAngle } = sector();
+
+      expect(blipSectorOf(quadrant.position)).toEqual({ startAngle, endAngle });
     });
   });
 });
