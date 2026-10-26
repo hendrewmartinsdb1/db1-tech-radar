@@ -94,9 +94,9 @@ As variáveis de build estão declaradas e versionadas em [`.env`](.env) — ess
 - **Quatro quadrantes na geometria.** O limite vive nos blocos de rótulo em
   `src/components/RadarGrid`, nas listas posicionais de descrição dos dicionários de tradução e na
   ausência de validação da configuração. A reescrita que torna esse número configurável precisa
-  manter o desenho idêntico ao publicado hoje quando houver quatro quadrantes; o porquê da escolha
-  e as alternativas descartadas estão em
-  [`docs/adr/0001-geometria-configuravel-do-grafico.md`](docs/adr/0001-geometria-configuravel-do-grafico.md).
+  manter o desenho idêntico ao publicado hoje quando houver quatro quadrantes; a regra, a trava
+  que a verifica e as alternativas descartadas estão na skill
+  [`componente-grafico-do-radar`](.agents/skills/componente-grafico-do-radar/SKILL.md).
 - **Acervo editado à mão.** `public/db1-opinion.json` é alterado por pull request, com `flag` e
   `revisions` preenchidos por quem edita. Tecnologia nova entra no anel `assess`; a promoção é
   decisão do time de engenharia (`CONTRIBUTING.md`).
