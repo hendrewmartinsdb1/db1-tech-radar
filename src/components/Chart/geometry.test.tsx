@@ -8,6 +8,7 @@ import {
   segmentRadians,
   slotOf,
 } from "./geometry";
+import { blipQuarterTurns } from "./legacyAngles";
 
 const publishedConfig = realConfig as unknown as ConfigData;
 
@@ -61,6 +62,12 @@ const configWithQuadrants = (quadrantCount: number): ConfigData => {
     },
     homepageContent: HomepageOption.both,
   };
+};
+
+const blipSectorOf = (position: number) => {
+  const startAngle = ((4 - blipQuarterTurns[position - 1]) % 4) * 90;
+
+  return { startAngle, endAngle: startAngle + 90 };
 };
 
 const sectorsOf = (numSegments: number) =>
@@ -215,6 +222,17 @@ describe("public/config.json", () => {
 
       expect(arc.startAngle).toBeCloseTo(startAngle, 10);
       expect(arc.endAngle).toBeCloseTo(endAngle, 10);
+    });
+  });
+
+  Object.entries(publishedConfig.quadrantsMap).forEach(([slug, quadrant]) => {
+    it(`should place the ${slug} blips on the sector given by its order`, () => {
+      const { startAngle, endAngle } = segmentAngles(
+        slotOf(quadrant),
+        segmentCount(publishedConfig)
+      );
+
+      expect(blipSectorOf(quadrant.position)).toEqual({ startAngle, endAngle });
     });
   });
 });
