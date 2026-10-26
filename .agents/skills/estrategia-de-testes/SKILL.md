@@ -235,14 +235,14 @@ request descrito em `CONTRIBUTING.md`.
   um nome de mês.
 - **O gráfico é SVG escrito à mão e a suíte não o renderiza.** `RadarChart`,
   `BlipPoints` e `QuadrantRings` importam `d3` e ficam fora do alcance do Jest deste
-  projeto. O que é afirmável por teste são as funções puras de `geometry.ts`; a
-  conferência do SVG — valores de `d`, `cx`, `cy` e `transform` — é manual, comparando a
-  página com o radar publicado.
-- **O vetor de deslocamento de `BlipPoints.tsx` é a tabela indexada por posição que resta.**
-  Ele é lido por `quadrantPosition - 1` e tem quatro entradas; fixture com posição fora de
-  1 a 4 produz `undefined` em tempo de execução. Os arcos dos anéis e o brilho de fundo do
-  setor não têm essa restrição: os dois tiram o setor de `geometry.ts`, pela quantidade de
-  quadrantes declarada no `ConfigData`.
+  projeto. O que é afirmável por teste são as funções puras de `geometry.ts` e as
+  tabelas de `legacyAngles.ts`; a conferência do SVG — valores de `d`, `cx`, `cy` e
+  `transform` — é manual, comparando a página com o radar publicado.
+- **`blipQuarterTurns` é a tabela indexada por posição que resta.** Ela vive em
+  `src/components/Chart/legacyAngles.ts`, é lida por `quadrantPosition - 1` e tem quatro
+  entradas; fixture com posição fora de 1 a 4 produz `undefined` em tempo de execução. Os
+  arcos dos anéis e o brilho de fundo do setor não têm essa restrição: os dois tiram o
+  setor de `geometry.ts`, pela quantidade de quadrantes declarada no `ConfigData`.
 - **A viewport do jsdom é móvel.** `isMobileViewport()` (`src/config.ts`) compara
   `window.innerWidth` com 1200, e o padrão do jsdom é 1024. Um teste que renderiza
   `Router` numa rota de item cai em `PageItemMobile`. Renderize o `Page*` desejado
