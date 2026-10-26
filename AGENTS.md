@@ -95,10 +95,8 @@ As variáveis de build estão declaradas e versionadas em [`.env`](.env) — ess
   `src/components/RadarGrid/radar-grid.scss`, que declara um lugar por slot de tela até seis;
   nada valida a configuração, e um sétimo quadrante deixa o seu bloco sobreposto ao do slot 6.
   Qualquer quantidade declarada precisa manter o desenho idêntico ao publicado hoje quando
-  houver quatro quadrantes. O porquê das escolhas e as alternativas descartadas estão em
-  [`docs/adr/0001-geometria-configuravel-do-grafico.md`](docs/adr/0001-geometria-configuravel-do-grafico.md)
-  e em
-  [`docs/adr/0002-lugar-do-bloco-de-rotulo-pelo-slot-de-tela.md`](docs/adr/0002-lugar-do-bloco-de-rotulo-pelo-slot-de-tela.md).
+  houver quatro quadrantes. A regra, a trava que a verifica e as alternativas descartadas estão
+  na skill [`componente-grafico-do-radar`](.agents/skills/componente-grafico-do-radar/SKILL.md).
 - **Acervo editado à mão.** `public/db1-opinion.json` é alterado por pull request, com `flag` e
   `revisions` preenchidos por quem edita. Tecnologia nova entra no anel `assess`; a promoção é
   decisão do time de engenharia (`CONTRIBUTING.md`).
