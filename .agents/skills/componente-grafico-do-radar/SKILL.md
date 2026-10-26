@@ -97,8 +97,8 @@ fixa para cada slug:
 - os lados da tela onde caem as pontas do polígono de brilho (`publishedGlowTips`).
 
 `src/components/RadarGrid/QuadrantLabel.test.tsx` faz o mesmo para os blocos de rótulo: monta o
-bloco de cada slug publicado e exige que ele caia no slot de tela publicado e exiba a `position`
-declarada. `radar-grid.scss.test.tsx` exige um lugar por slot de 1 a 6 e nenhum caso próprio para
+bloco de cada slug publicado, com e sem `order`, e exige que ele caia no slot de tela publicado e
+exiba a `position` declarada. `radar-grid.scss.test.tsx` exige um lugar por slot de 1 a 6 e nenhum caso próprio para
 quatro quadrantes.
 
 Alterar a `position` ou o `order` de um quadrante, ou qualquer função de `geometry.ts`, de forma

@@ -89,6 +89,19 @@ describe("QuadrantLabel", () => {
   );
 
   it.each(publishedBlocks)(
+    "should keep the block of $slug on the screen slot $slot when no order is declared",
+    ({ slug, slot }) => {
+      const { order, ...quadrantConfig } = publishedConfig.quadrantsMap[slug];
+
+      mountLabel(slug, publishedConfig.quadrants[slug], quadrantConfig);
+
+      expect(
+        headlineOnSlot(publishedConfig.quadrants[slug], slot)
+      ).toBeInTheDocument();
+    }
+  );
+
+  it.each(publishedBlocks)(
     "should display the declared position of $slug",
     ({ slug, position }) => {
       mountPublishedLabel(slug);
