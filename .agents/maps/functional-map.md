@@ -52,8 +52,11 @@ configuração consumido por todos os demais.
   cada quadrante e anel; sem a chave correspondente o rótulo aparece como a própria chave
   crua na interface.
 - Convenção de testes (skill `estrategia-de-testes`) — mudar a taxonomia exige teste
-  unitário sobre quem a lê (`translate`, agrupamentos de `src/model.ts`); sem ele a quebra só
-  aparece em produção, porque nada valida a configuração em tempo de build.
+  unitário sobre quem a lê (`translate`, agrupamentos de `src/model.ts`). A configuração
+  carregada é verificada por `validateConfig` (`src/validateConfig.ts`), que devolve uma tela de
+  erro legível com todos os problemas; o teste do `public/config.json` real roda no deploy
+  (`.github/workflows/prod-deploy-app-on-harbor.yml`) e trava a publicação de uma configuração
+  inválida antes da compilação.
 
 **Nível de confiança.** `high` — configuração e contrato explícitos no código.
 
@@ -272,8 +275,9 @@ anéis acontece fora do repositório e não é observável no código.
 
 **Evidência no código.**
 - `.github/workflows/prod-deploy-app-on-harbor.yml` — a cada push em `main`: Node 16.14,
-  `yarn install --frozen-lockfile`, `yarn build`, credenciais AWS por OIDC e
-  `aws s3 sync ./build s3://techradar.db1.com.br --delete`.
+  `yarn install --frozen-lockfile`, `CI=true yarn test src/validateConfig.test.ts` (trava a
+  publicação de uma configuração inválida antes de compilar), `yarn build`, credenciais AWS por
+  OIDC e `aws s3 sync ./build s3://techradar.db1.com.br --delete`.
 - `package.json` — `build` executa `react-scripts build`.
 - `.env` — `PUBLIC_URL` e `REACT_APP_BUILDHASH`.
 
@@ -290,6 +294,9 @@ anéis acontece fora do repositório e não é observável no código.
   página `.html` por item.
 - A troca de bundle é percebida pelo navegador via `REACT_APP_BUILDHASH` na querystring dos
   três `fetch` de dados.
+- A falha de carga de qualquer um dos três JSON (`config.json`, `db1-opinion.json`,
+  `messages.json`) — rede, 404 ou JSON inválido — renderiza uma tela de erro no lugar da tela em
+  branco, com a falha registrada no console do navegador.
 - Este é o único caminho de publicação. O pipeline Markdown (`scripts/`, `dist_scripts/`,
   `tsconfig.scripts.json`, script `build:scripts`), o `Dockerfile` com o `.dockerignore` e a
   configuração do Firebase Hosting (`firebase.json`, `.firebaserc`, `.firebase/`) são

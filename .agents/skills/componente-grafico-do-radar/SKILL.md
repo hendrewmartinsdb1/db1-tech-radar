@@ -73,8 +73,12 @@ nova tira o seu lugar de `slotOf(quadrant)` e de `segmentCount(config)`.
   quadrantes em `data-quadrants`.
 - O lugar de cada slot é declarado em `src/components/RadarGrid/radar-grid.scss`, numa tabela
   indexada pela classe do slot e por `data-quadrants`, com um lugar por slot de um a seis
-  quadrantes. Essa tabela fixa o **teto de seis**: um sétimo quadrante ganha setor correto, mas o
-  seu bloco fica sobreposto ao do slot 6. Elevar o teto é acrescentar lugares à tabela.
+  quadrantes. Essa tabela fixa o **teto de seis**: a geometria desenha o setor de qualquer
+  quantidade, mas a tabela só tem lugar para o bloco de rótulo até o slot 6. O teto é verificado no
+  carregamento da configuração por `validateConfig` (`src/validateConfig.ts`), que conta os
+  quadrantes por `segmentCount` e aponta um sétimo com uma mensagem legível citando esta tabela como
+  origem do limite, em vez de deixá-lo com o bloco sobreposto ao do slot 6. Elevar o teto é
+  acrescentar lugares à tabela.
 - Quatro quadrantes não têm caso próprio na tabela: o layout publicado vem das regras de base, e
   nenhuma regra de espaço incide sobre ele.
 - Cinco e seis quadrantes reservam espaço no contêiner — faixa abaixo do círculo para o bloco do

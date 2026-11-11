@@ -92,11 +92,14 @@ As variáveis de build estão declaradas e versionadas em [`.env`](.env) — ess
   `bodyPt`, `bodyEn` e `bodyEs` do tipo `Item`. Um quarto idioma exige mudar modelo, dado e
   componentes.
 - **De um a seis quadrantes.** O teto vem da tabela de lugares dos blocos de rótulo em
-  `src/components/RadarGrid/radar-grid.scss`, que declara um lugar por slot de tela até seis;
-  nada valida a configuração, e um sétimo quadrante deixa o seu bloco sobreposto ao do slot 6.
-  Qualquer quantidade declarada precisa manter o desenho idêntico ao publicado hoje quando
-  houver quatro quadrantes. A regra, a trava que a verifica e as alternativas descartadas estão
-  na skill [`componente-grafico-do-radar`](.agents/skills/componente-grafico-do-radar/SKILL.md).
+  `src/components/RadarGrid/radar-grid.scss`, que declara um lugar por slot de tela até seis. A
+  configuração é verificada no carregamento por `validateConfig` (`src/validateConfig.ts`), que
+  mostra uma tela de erro legível com todos os problemas e aponta um sétimo quadrante em vez de
+  deixar o seu bloco sobreposto ao do slot 6; o teste do `public/config.json` real roda no deploy
+  e trava a publicação de uma configuração inválida. Qualquer quantidade declarada precisa manter
+  o desenho idêntico ao publicado hoje quando houver quatro quadrantes. A regra, a trava que a
+  verifica e as alternativas descartadas estão na skill
+  [`componente-grafico-do-radar`](.agents/skills/componente-grafico-do-radar/SKILL.md).
 - **Acervo editado à mão.** `public/db1-opinion.json` é alterado por pull request, com `flag` e
   `revisions` preenchidos por quem edita. Tecnologia nova entra no anel `assess`; a promoção é
   decisão do time de engenharia (`CONTRIBUTING.md`).

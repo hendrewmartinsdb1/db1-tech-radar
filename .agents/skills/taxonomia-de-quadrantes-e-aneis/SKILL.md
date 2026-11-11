@@ -262,31 +262,44 @@ marcação HTML simples, sanitizada antes de ser exibida.
 
 ## Restrições e validações
 
+A configuração carregada é verificada a cada carregamento pela função `validateConfig` em
+`src/validateConfig.ts`, que devolve de uma vez todos os problemas encontrados — cada um com
+mensagem legível que nomeia o campo, o slug e o valor. Os problemas aparecem numa tela de erro no
+lugar do radar e são registrados no console do navegador. Cada restrição abaixo é uma das regras
+conferidas:
+
 - **Os dois mapas de quadrante declaram o mesmo conjunto de slugs.** Um slug presente só no mapa
   de nomes tem página própria mas não é desenhado; presente só no mapa de atributos, é desenhado
-  mas não tem página nem listagem.
+  mas não tem página nem listagem. A validação nomeia o slug e o mapa em que ele sobra.
 - **Posições sem repetição.** Duas posições iguais fazem dois blocos de rótulo exibirem o mesmo
-  número ao leitor.
+  número ao leitor. A validação nomeia os slugs em conflito e o valor repetido.
 - **Slots de tela contíguos de 1 a N, sem repetição.** Os valores de `order` cobrem a sequência
   inteira de 1 até a quantidade de quadrantes declarados, sem buraco. Um slot repetido desenha
-  dois quadrantes sobre a mesma fatia do círculo e deixa outra fatia sem dono.
+  dois quadrantes sobre a mesma fatia do círculo e deixa outra fatia sem dono. A validação nomeia
+  os slugs em conflito e o valor de slot repetido ou ausente.
 - **Uma entrada de geometria por anel**, com raios crescentes. Menos entradas do que anéis
-  impede o gráfico de renderizar.
+  impede o gráfico de renderizar. A validação nomeia a divergência entre a quantidade de entradas
+  e de anéis e o raio fora de ordem crescente.
 - **O slug é segmento de URL**: sem barra, sem espaço e sem acento. A barra separa quadrante e
-  nome do item no endereço da página de um item.
+  nome do item no endereço da página de um item. A validação nomeia o slug e o caractere inválido.
 - **O número de quadrantes vai de um a seis.** O diagrama — arcos, brilho de fundo e pontos — é
   desenhado a partir do slot de tela para qualquer quantidade declarada; o teto vem da tabela de
-  lugares dos blocos de rótulo ao redor do gráfico, que declara um lugar por slot até seis. Um
-  sétimo quadrante deixa o seu bloco sobre o do slot 6. Qualquer quantidade declarada precisa
-  manter o desenho idêntico ao publicado hoje quando houver quatro quadrantes.
+  lugares dos blocos de rótulo ao redor do gráfico, que declara um lugar por slot até seis. A
+  validação conta os quadrantes e aponta um sétimo com uma mensagem que pede de um a seis quadrantes
+  e cita essa tabela como origem do teto, em vez de deixar o seu bloco sobre o do slot 6. Qualquer
+  quantidade declarada precisa manter o desenho idêntico ao publicado hoje quando houver quatro
+  quadrantes.
 - **Os três idiomas são obrigatórios.** Um eixo sem rótulo em um dos idiomas aparece com a chave
   crua naquele idioma. O quadrante sem entrada em `pageHelp.quadrants` no idioma ativo some da
   lista da página de ajuda, porque a página lê o mapa inteiro do idioma ativo; no bloco de rótulo
-  a descrição dele cai no inglês, porque ali a leitura é por chave de folha. A suíte de
-  consistência dos dicionários acusa o slug declarado na taxonomia sem entrada em algum idioma,
-  nomeando o slug e o idioma.
-- **Não há validação automática.** A conformidade entre acervo e taxonomia depende da revisão
-  humana do pull request (regra 11).
+  a descrição dele cai no inglês, porque ali a leitura é por chave de folha. A validação da
+  configuração confere `quadrants.<slug>` e `pageHelp.quadrants.<slug>` com `name` e `description`
+  nos três idiomas e nomeia o slug e o idioma faltante; a suíte de consistência dos dicionários
+  também acusa o slug declarado na taxonomia sem entrada em algum idioma.
+- **A validação automática cobre a configuração, não o acervo.** As regras acima são conferidas na
+  configuração carregada; a conformidade entre acervo e taxonomia continua dependendo da revisão
+  humana do pull request (regra 11): item com quadrante ou anel inexistente não é apontado por
+  nenhuma verificação automática.
 
 ## Integrações e dependências externas
 
