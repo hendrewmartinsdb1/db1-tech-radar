@@ -184,21 +184,27 @@ Item sem quadrante ou sem anel declarado também é omitido do gráfico.
 
 ## Fluxos e ciclo de vida
 
-### Acrescentar um quadrante
+Acrescentar um quadrante é alteração de dado, sem tocar no código do gráfico:
 
 1. Escolher o slug em inglês, estável e válido como segmento de URL.
-2. Declará-lo nos dois mapas da taxonomia: o de nomes e o de atributos (ver *Entidades e dados*).
-3. Atribuir a posição (o número exibido), o slot de tela (a fatia do círculo e o lugar do bloco
-   de rótulo), a cor do setor e a cor do texto.
-4. Acrescentar a entrada do slug nos três dicionários de idioma, com o rótulo curto e com o nome
-   e a descrição longa.
-5. Acrescentar a entrada de geometria correspondente, para que o novo setor tenha onde ser
-   desenhado.
-6. Publicar com um novo identificador de build, para que a configuração alterada chegue a quem
-   já visitou o site.
+2. Declará-lo nos dois mapas da taxonomia — o de nomes e o de atributos (ver *Entidades e dados*) —
+   com a posição (o número exibido), o slot de tela (a fatia do círculo e o lugar do bloco de
+   rótulo), a cor do setor e a cor do texto.
+3. Acrescentar a entrada do slug nos três dicionários de idioma, com o rótulo curto e com o nome e
+   a descrição longa.
+4. Publicar com um novo identificador de build, para que a configuração alterada chegue a quem já
+   visitou o site.
 
 O diagrama e os blocos de rótulo acompanham a quantidade de quadrantes declarada, até o teto de
-seis.
+seis; o novo setor é desenhado a partir do slot de tela, sem entrada de geometria própria — ao
+contrário de um anel, que declara raio e espessura. O procedimento operacional completo — os campos
+de cada mapa, as chaves de tradução, os itens do acervo no anel `assess`, o identificador de build e
+os limites de um a seis quadrantes — está no guia público `CONTRIBUTING.md`, seção "Adding or
+reordering a quadrant"; reordenar é mudar só o slot de tela (`order`).
+
+`src/components/RadarGrid/RadarGrid.test.tsx` é a trava automatizada de que o desenho acompanha a
+quantidade de quadrantes declarada: renderiza o `RadarGrid` para N = 3/4/5/6 e confere os arcos, o
+brilho, os blips, os blocos de rótulo e os rótulos de anel por quadrante.
 
 ### Acrescentar um anel
 

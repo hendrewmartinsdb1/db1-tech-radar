@@ -112,12 +112,19 @@ site publicado.
 
 ### Testes do componente
 
-- Mantenha a lógica testada em módulos que o Jest consegue carregar (`geometry.ts`, `blips.ts`).
-  O `d3` v7 é ESM e o Jest do `react-scripts` não o transforma, e o `Link` dos pontos traz o
-  `query-string`, que tem o mesmo problema: um teste que importa um componente do gráfico falha
-  ao carregar. Pelo mesmo motivo, `QuadrantLabel` vive em arquivo próprio, fora do grafo de
-  importação do `d3`.
-- Cubra cada função nova de `geometry.ts` para mais de uma quantidade de setores (3, 4, 5 e 6).
+- O desenho montado é testável: a chave `jest` do `package.json` transforma `d3`, os `d3-*` e o
+  `query-string` (que chega pelos pontos via `Link`) com `transformIgnorePatterns`, de modo que um
+  teste pode importar e renderizar um componente do gráfico.
+- `src/components/RadarGrid/RadarGrid.test.tsx` é a trava de integração do desenho montado: renderiza
+  o `RadarGrid` em `MemoryRouter` e confere, para N = 3/4/5/6, a contagem de arcos de anel e de
+  formas de brilho, as coordenadas finitas do SVG, o blip no setor do seu quadrante pelo ângulo
+  medido nas coordenadas renderizadas, um bloco de rótulo por slot e dois rótulos por anel. Ela fica
+  ao lado das travas de retrocompatibilidade de `geometry.test.tsx` (faixa angular, radianos do
+  gerador de arcos, canto dos pontos e pontas do brilho) e de `QuadrantLabel.test.tsx` (slot de tela
+  e `position` de cada bloco).
+- Mantenha a lógica pura em `geometry.ts` e `blips.ts`, afirmável sem renderizar; cubra cada função
+  nova para mais de uma quantidade de setores (3, 4, 5 e 6). `QuadrantLabel` vive em arquivo próprio,
+  em `src/components/RadarGrid/`, o que deixa o bloco de rótulo testável isolado do gráfico.
 - Passe o gerador aleatório como parâmetro (`rand`) para fixar o sorteio no teste.
 
 ## Ferramentas e artefatos envolvidos
