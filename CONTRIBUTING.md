@@ -50,8 +50,8 @@ Then add the translated text, once per language, in `src/i18n/translations/pt.js
 
 3. `quadrants.<slug>` — the short label shown next to the sector.
 4. `pageHelp.quadrants.<slug>` — an object with `name` and `description`, the long text shown on the
-   help page. A quadrant without the entry in one of the three languages shows the raw key in that
-   language.
+   help page. A quadrant missing either entry in any of the three languages is reported by
+   `validateConfig`, and the site shows the configuration error screen instead of the radar.
 
 Finally, give the quadrant some content and publish it:
 
@@ -75,5 +75,6 @@ A few limits and behaviours to keep in mind:
   quadrant is reported by `validateConfig` with a readable message pointing at this table.
 - **Blip positions are random.** The spot of each blip inside its sector and ring band is drawn on
   every load, so two visits show the same technology in different places.
-- **Odd number of quadrants.** With an odd N the left and right ring labels sit on a sector boundary
-  and may touch a blip — a known cosmetic limitation, not a defect.
+- **Ring labels with a count other than four.** The left and right ring labels sit on the horizontal
+  axis, which is a sector boundary only with four quadrants. With any other count they fall inside a
+  sector and may touch a blip — a known cosmetic limitation, not a defect.

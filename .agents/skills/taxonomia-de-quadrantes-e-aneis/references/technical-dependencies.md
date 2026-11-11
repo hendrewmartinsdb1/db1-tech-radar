@@ -16,8 +16,8 @@ Cada item diz o que é e o que deixa de funcionar no domínio se ele faltar.
   de anéis vazios e os atributos de cada quadrante.
 
 - **Arquivos de tradução `src/i18n/translations/*.json`** — guardam o rótulo e a descrição de
-  cada quadrante e anel; sem a chave correspondente o rótulo aparece como a própria chave crua
-  na interface.
+  cada quadrante e anel; sem a chave de um quadrante a validação da configuração mostra a tela de
+  erro, e sem a chave de um anel o rótulo aparece como a própria chave crua na interface.
 
 - **Convenção de testes do projeto** — mudar a taxonomia exige teste unitário sobre quem a lê
   (resolução de rótulo, agrupamentos por quadrante e anel); sem ele a quebra só aparece em

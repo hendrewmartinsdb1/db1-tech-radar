@@ -59,10 +59,10 @@ exibido não tem esse efeito, porque o rótulo vive na tradução.
 
 | Slug | Posição | Cor | Cor do texto | pt | en | es |
 | --- | --- | --- | --- | --- | --- | --- |
-| `languages-and-frameworks` | 1 | `#cdcaeb` | `#444444` | Linguagens & Frameworks | Languages & Frameworks | Lenguajes y frameworks |
-| `methods-and-patterns` | 2 | `#4867ff` | `white` | Métodos & Padrões | Methods & Patterns | Métodos y modelos |
-| `platforms-and-operations` | 3 | `#ff2d5e` | `#444444` | Plataformas & Operações | Platforms & Operations | Plataformas y operaciones |
-| `tools` | 4 | `#ffc000` | `white` | Ferramentas | Tools | Herramientas |
+| `languages-and-frameworks` | 1 | `#bbc1d2` | `#0f1629` | Linguagens & Frameworks | Languages & Frameworks | Lenguajes y frameworks |
+| `methods-and-patterns` | 2 | `#9db3f0` | `#0f1629` | Métodos & Padrões | Methods & Patterns | Métodos y modelos |
+| `platforms-and-operations` | 3 | `#e81e3f` | `white` | Plataformas & Operações | Platforms & Operations | Plataformas y operaciones |
+| `tools` | 4 | `#f5b94a` | `#0f1629` | Ferramentas | Tools | Herramientas |
 
 A **cor** do quadrante pinta o setor correspondente do gráfico e o ponto de cada item ali
 classificado; a **cor do texto** é a usada sobre essa cor de fundo, para manter o contraste do
@@ -146,8 +146,9 @@ No quadrante, o slug endereça os dois textos: o rótulo curto e a descrição l
 próprias do slug no dicionário, de modo que a associação entre quadrante e texto não depende da
 ordem em que as entradas aparecem.
 
-Acrescentar um eixo sem acrescentar a chave correspondente nos três dicionários faz a interface
-exibir a chave crua.
+Acrescentar um quadrante sem as chaves correspondentes nos três dicionários faz a validação da
+configuração acusar o slug e o idioma, e o site mostra a tela de erro no lugar do radar.
+Acrescentar um anel sem a chave correspondente faz a interface exibir a chave crua.
 
 O dicionário de anéis carrega, além dos quatro anéis, um rótulo para a opção "todos"
 (`todos` / `all` / `todos`), usado pelos filtros por anel como seleção neutra — ele não é um

@@ -330,7 +330,7 @@ a configuração do bucket e da distribuição vive fora do repositório e não 
 
 ## 7. Identidade Institucional DB1
 
-**Objetivo de negócio.** Apresentar o radar como peça institucional do DB1 Global Software:
+**Objetivo de negócio.** Apresentar o radar como peça institucional da DB1 Itênex:
 marca, logotipo, canais oficiais e informação legal.
 
 **Evidência no código.**
@@ -340,7 +340,7 @@ marca, logotipo, canais oficiais e informação legal.
   componentes.
 - `src/components/Branding/`, `LogoLink/`, `Footer/`, `FooterEnd/`, `SocialLink/` — cabeçalho
   com marca, rodapé com nota institucional e ícones sociais.
-- `public/fonts/` (ClanOT), `public/logo/`, `src/styles/` — tipografia e identidade visual.
+- `public/fonts/` (Artlab), `public/logo/`, `src/styles/` — tipografia e identidade visual.
 - `src/i18n/translations/*.json`, chaves `footerFootnote`, `legalInformationLabel`,
   `socialLinksLabel` — o texto institucional traduzido.
 
@@ -355,9 +355,9 @@ marca, logotipo, canais oficiais e informação legal.
 **Dependências externas relevantes.** `react-icons` para os ícones dos canais sociais.
 
 **Dependências técnicas do domínio.**
-- `public/messages.json` servido como estático — a ausência do arquivo não impede a aplicação
-  de carregar, mas apaga rodapé institucional e canais sociais.
-- Fontes ClanOT em `public/fonts/` e `public/fonts.css` — sustentam a identidade visual; sem
+- `public/messages.json` servido como estático — sem ele a aplicação mostra a tela de erro de
+  carregamento no lugar do radar, junto com `config.json` e `db1-opinion.json`.
+- Fontes Artlab em `public/fonts/artlab/` e `public/fonts.css` — sustentam a identidade visual; sem
   elas o site cai em fonte alternativa.
 - Convenção de testes (skill `estrategia-de-testes`) — o rodapé leva teste de componente
   quando sua estrutura muda, porque ele aparece em todas as telas.

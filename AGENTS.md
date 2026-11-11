@@ -2,7 +2,7 @@
 
 ## Visão geral
 
-O `db1-tech-radar` é o Tech Radar público do DB1 Global Software, publicado em
+O `db1-tech-radar` é o Tech Radar público da DB1 Itênex, publicado em
 `techradar.db1.com.br`. Ele expõe a opinião oficial da engenharia do DB1 sobre tecnologias —
 linguagens, frameworks, métodos, plataformas e ferramentas — classificadas em quadrantes
 temáticos e anéis de maturidade, com o texto de opinião em português, inglês e espanhol.
@@ -29,7 +29,7 @@ acervo é editado à mão, por pull request. O repositório público é
 | `public/db1-opinion.json` | O acervo: itens e releases. Única origem das opiniões. |
 | `public/config.json` | Taxonomia (quadrantes e anéis) e geometria do gráfico. |
 | `public/messages.json` | Links institucionais e canais oficiais do DB1. |
-| `public/fonts/`, `public/logo/` | Tipografia ClanOT e identidade visual. |
+| `public/fonts/`, `public/logo/` | Tipografia Artlab e identidade visual DB1 Itênex. |
 | `src/components/<Nome>/` | Um diretório por componente, com o `.tsx`, o `.scss` e o teste ao lado. |
 | `src/model.ts` | Tipos do domínio (`Item`, `Blip`, `Revision`) e as funções de agrupamento e filtro. |
 | `src/config.ts` | Contrato `ConfigData`, `publicUrl` e `translate`. |
