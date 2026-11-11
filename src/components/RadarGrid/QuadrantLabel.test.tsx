@@ -24,19 +24,19 @@ jest.mock("../Link/Link", () => {
 const publishedConfig = realConfig as unknown as ConfigData;
 
 const publishedBlocks = [
-  { slug: "methods-and-patterns", slot: 1, position: 2, colour: "#4867ff" },
-  { slug: "tools", slot: 2, position: 4, colour: "#ffc000" },
+  { slug: "methods-and-patterns", slot: 1, position: 2, colour: "#9db3f0" },
+  { slug: "tools", slot: 2, position: 4, colour: "#f5b94a" },
   {
     slug: "platforms-and-operations",
     slot: 3,
     position: 3,
-    colour: "#ff2d5e",
+    colour: "#e81e3f",
   },
   {
     slug: "languages-and-frameworks",
     slot: 4,
     position: 1,
-    colour: "#cdcaeb",
+    colour: "#bbc1d2",
   },
 ];
 
