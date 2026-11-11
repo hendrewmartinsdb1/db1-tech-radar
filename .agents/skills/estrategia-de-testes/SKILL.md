@@ -63,13 +63,12 @@ brilho de fundo de cada setor e o sorteio da posição do ponto, e é `geometry.
 exercita. Ao lado dele, `src/components/Chart/blips.ts` é o módulo puro que monta a lista de
 pontos a partir dos itens e da configuração, coberto por `blips.test.tsx`.
 
-Módulo que importa o `d3` não é alcançável pela suíte: o `d3` 7.8.0 é publicado como ESM e o
-transform do `react-scripts` não entra em `node_modules`, de modo que um arquivo de teste que
-traga `RadarChart.tsx`, `BlipPoints.tsx` ou `QuadrantRings.tsx` para o grafo de imports falha
-com `SyntaxError` antes de rodar qualquer caso. Cálculo novo do desenho que precise de cobertura
-automática nasce em `geometry.ts`, como função pura sobre números; o que depende das escalas
-`d3` fica como função de módulo no componente, verificado pela conferência visual do pull
-request.
+A chave `jest` do `package.json` transforma o `d3`, os `d3-*` e o `query-string`, de modo que um
+arquivo de teste pode trazer `RadarChart.tsx`, `BlipPoints.tsx`, `QuadrantRings.tsx` ou
+`RadarGrid.tsx` para o grafo de imports e renderizá-los. Ainda assim, cálculo novo do desenho que
+precise de cobertura automática nasce em `geometry.ts`, como função pura sobre números, afirmável
+sem renderizar; a renderização do SVG montado é coberta pelo teste de integração de `RadarGrid`
+(ver *Restrições e armadilhas conhecidas*).
 
 O sorteio da posição do ponto recebe a fonte de aleatoriedade como parâmetro opcional, em
 `blipPosition` e em `buildBlips`, com `Math.random` como padrão. Um teste afirma invariantes com o
@@ -129,10 +128,12 @@ do render —, o teste vai no `Page*` correspondente.
 
 ### Como montar o teste de componente
 
-`react-scripts test` descobre sozinho qualquer `*.test.tsx` sob `src/`. Não existe
-arquivo de configuração Jest no repositório nem chave `jest` no `package.json`: a
-configuração é a embutida no `react-scripts`. `src/setupTests.ts` é carregado
-automaticamente antes de cada arquivo de teste e importa `@testing-library/jest-dom`,
+`react-scripts test` descobre sozinho qualquer `*.test.tsx` sob `src/`. A configuração é a
+embutida no `react-scripts`, com um único override: a chave `jest` do `package.json` traz
+`transformIgnorePatterns` que libera `d3`, os `d3-*`, o `query-string` e as dependências ESM deles
+(`internmap`, `delaunator`, `robust-predicates`, `decode-uri-component`, `split-on-first`,
+`filter-obj`) para a transformação do Babel, preservando o padrão de CSS modules. `src/setupTests.ts`
+é carregado automaticamente antes de cada arquivo de teste e importa `@testing-library/jest-dom`,
 de modo que os matchers de DOM já estão disponíveis sem import por arquivo.
 
 Componente que renderiza `Link` (`src/components/Link/Link.tsx`) ou usa
@@ -238,21 +239,20 @@ request descrito em `CONTRIBUTING.md`.
   quando `src/i18n` entra no grafo de imports do teste. Afirme sobre um formato
   independente de locale (`"DD.MM.YYYY"`) ou fixe o idioma no teste antes de esperar
   um nome de mês.
-- **O gráfico é SVG escrito à mão e a suíte não o renderiza.** `RadarChart` e `QuadrantRings`
-  importam `d3` e ficam fora do alcance do Jest deste projeto, e com eles `RadarGrid`, que traz
-  `RadarChart`. O que é afirmável por teste são as funções puras de `geometry.ts` e de
-  `blips.ts`; a conferência do SVG — valores de `d`, `cx`, `cy` e `transform` — é manual,
-  comparando a página com o radar publicado.
-- **`Link` é alcançável; o `d3`, não.** Um componente cujo único import ESM é `Link`
-  (`src/components/Link/Link.tsx`, que traz o `query-string` 8.1.0 por
-  `use-search-param-state`) entra no alcance da suíte substituindo esse módulo no próprio arquivo
-  de teste, com `jest.mock("../Link/Link")` e uma fábrica que devolve um `<a>`; é assim que
-  `QuadrantLabel.test.tsx` e `QuadrantGrid.test.tsx` rodam, e é o que colocaria `BlipPoints.tsx`
-  ao alcance da suíte, já que ele também só chega ao ESM pelo `Link`. Sem a substituição, o
-  `query-string` derruba o arquivo com `SyntaxError: Cannot use import statement outside a
-  module` antes de qualquer caso — é o que mantém `Item.test.tsx` vermelho. A substituição não
-  alcança o `d3`: módulo que o importe continua fora do alcance da suíte, porque o `d3` chega
-  por `node_modules` e não por um import do próprio `src/`.
+- **O gráfico montado é renderizável pela suíte.** Com a chave `jest` transformando `d3`, os
+  `d3-*` e o `query-string`, `RadarChart`, `QuadrantRings`, `BlipPoints`, `RadarGrid` e `App`
+  entram no alcance do Jest. `src/components/RadarGrid/RadarGrid.test.tsx` renderiza o `RadarGrid`
+  em `MemoryRouter` e afirma sobre o SVG montado — contagem de arcos de anel e de formas de brilho,
+  coordenadas finitas, blips no setor do seu quadrante pelo ângulo renderizado, blocos de rótulo
+  por slot e dois rótulos por anel — para N = 3/4/5/6. As funções puras de `geometry.ts` e de
+  `blips.ts` seguem cobertas por teste unitário, e o lugar em pixels de cada classe de slot continua
+  conferido por captura de tela comparada ao radar publicado.
+- **`jest.mock("../Link/Link")` é isolamento, não necessidade.** O `query-string` 8.1.0 que chega
+  pelo `Link` (`src/components/Link/Link.tsx`, por `use-search-param-state`) é transformado pela
+  chave `jest`, então `Item.test.tsx` e `BlipPoints` carregam e rodam sem substituir módulo.
+  `QuadrantLabel.test.tsx` e `QuadrantGrid.test.tsx` ainda substituem o `Link` com
+  `jest.mock("../Link/Link")` e uma fábrica que devolve um `<a>`, para isolar o componente do
+  roteamento; a substituição é opção de isolamento, não condição para alcançar o módulo.
 - **A viewport do jsdom é móvel.** `isMobileViewport()` (`src/config.ts`) compara
   `window.innerWidth` com 1200, e o padrão do jsdom é 1024. Um teste que renderiza
   `Router` numa rota de item cai em `PageItemMobile`. Renderize o `Page*` desejado

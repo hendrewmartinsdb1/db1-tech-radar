@@ -14,6 +14,12 @@
     "lint": "npm run ts:check && eslint src/**/*.tsx",
     "publish:npm": "rm -rf dist && mkdir dist &&  babel src/components -d dist --copy-files"
   },
+  "jest": {
+    "transformIgnorePatterns": [
+      "node_modules/(?!(d3|d3-[a-z-]+|internmap|delaunator|robust-predicates|query-string|decode-uri-component|split-on-first|filter-obj)/)",
+      "^.+\\.module\\.(css|sass|scss)$"
+    ]
+  },
   "dependencies": {
     "@apideck/better-ajv-errors": "0.3.6",
     "@babel/cli": "7.20.7",

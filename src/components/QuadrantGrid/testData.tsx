@@ -40,6 +40,20 @@ export const configWithFourQuadrants: ConfigData = {
   homepageContent: HomepageOption.both,
 };
 
+export const configWithThreeQuadrants: ConfigData = {
+  ...configWithFourQuadrants,
+  quadrants: {
+    "languages-and-frameworks": "Languages & Frameworks",
+    "methods-and-patterns": "Methods & Patterns",
+    "platforms-and-operations": "Platforms & Operations",
+  },
+  quadrantsMap: {
+    "languages-and-frameworks": quadrantAttributes(1, "#cdcaeb"),
+    "methods-and-patterns": quadrantAttributes(2, "#4867ff"),
+    "platforms-and-operations": quadrantAttributes(3, "#ff2d5e"),
+  },
+};
+
 export const configWithFiveQuadrants: ConfigData = {
   ...configWithFourQuadrants,
   quadrants: {
@@ -49,6 +63,18 @@ export const configWithFiveQuadrants: ConfigData = {
   quadrantsMap: {
     ...configWithFourQuadrants.quadrantsMap,
     "data-and-intelligence": quadrantAttributes(5, "#5cb449"),
+  },
+};
+
+export const configWithSixQuadrants: ConfigData = {
+  ...configWithFiveQuadrants,
+  quadrants: {
+    ...configWithFiveQuadrants.quadrants,
+    "security-and-privacy": "Security & Privacy",
+  },
+  quadrantsMap: {
+    ...configWithFiveQuadrants.quadrantsMap,
+    "security-and-privacy": quadrantAttributes(6, "#9b59b6"),
   },
 };
 
